@@ -1,0 +1,32 @@
+{
+  "name": "mqtt-mcp",
+  "version": "0.1.2",
+  "description": "MQTT + Sparkplug B MCP server for Claude and other AI assistants",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "mqtt-mcp": "build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsc && node build/index.js"
+  },
+  "keywords": [
+    "mqtt",
+    "sparkplug-b",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.1",
+    "mqtt": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
+

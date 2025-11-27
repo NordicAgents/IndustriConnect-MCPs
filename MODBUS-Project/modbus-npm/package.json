@@ -1,0 +1,39 @@
+{
+  "name": "modbus-mcp",
+  "version": "0.1.1",
+  "description": "NPX-based MCP server for Modbus (TCP/UDP/Serial) — tools for reading/writing coils and registers, typed decoding, tag maps, and health",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "modbus-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --loader ts-node/esm src/index.ts",
+    "start": "node build/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "modbus",
+    "modbus-tcp",
+    "modbus-rtu",
+    "industrial",
+    "iot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.2.0",
+    "dotenv": "^16.4.5",
+    "modbus-serial": "^8.0.23"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "files": [
+    "build",
+    "README.md",
+    "mcp-config-example.json"
+  ]
+}

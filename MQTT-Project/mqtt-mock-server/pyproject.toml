@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mqtt-mock-server"
+version = "0.1.0"
+description = "MQTT mock server with Sparkplug B edge node simulation"
+requires-python = ">=3.10"
+dependencies = [
+    "paho-mqtt>=1.6.1",
+    "protobuf>=4.24.0",
+]
+
+[project.scripts]
+mqtt-mock-server = "mqtt_mock_server:main"
+

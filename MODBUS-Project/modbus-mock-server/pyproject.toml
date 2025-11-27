@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "modbus-mock-server"
+version = "0.1.0"
+description = "A lightweight Modbus TCP mock server for testing."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "MODBUS Project" },
+]
+dependencies = [
+  "pymodbus>=3.5,<4",
+]
+
+[project.scripts]
+modbus-mock-server = "modbus_local_server:main"
+
+[tool.hatch.build.targets.wheel]
+include = [
+  "modbus_local_server.py",
+  "README.md",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "modbus_local_server.py",
+  "README.md",
+]
+

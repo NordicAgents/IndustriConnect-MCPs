@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "mqtt-mcp-local": {
+      "command": "node",
+      "args": ["/absolute/path/to/mqtt-npm/build/index.js"],
+      "env": {
+        "MQTT_BROKER_URL": "mqtt://127.0.0.1:1883",
+        "MQTT_CLIENT_ID": "mqtt-mcp-client",
+        "MQTT_KEEPALIVE": "60",
+        "SPARKPLUG_GROUP_ID": "factory",
+        "SPARKPLUG_EDGE_NODE_ID": "edge-node-1"
+      }
+    },
+    "mqtt-mcp-production": {
+      "command": "npx",
+      "args": ["mqtt-mcp"],
+      "env": {
+        "MQTT_BROKER_URL": "mqtt://broker.example.com:1883",
+        "MQTT_USERNAME": "username",
+        "MQTT_PASSWORD": "password",
+        "MQTT_CLIENT_ID": "mqtt-mcp-prod",
+        "SPARKPLUG_GROUP_ID": "production",
+        "SPARKPLUG_EDGE_NODE_ID": "edge-node-prod"
+      }
+    }
+  }
+}
+

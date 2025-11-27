@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "modbus-npx": {
+      "command": "modbus-mcp",
+      "env": {
+        "MODBUS_TYPE": "tcp",
+        "MODBUS_HOST": "127.0.0.1",
+        "MODBUS_PORT": "502",
+        "MODBUS_DEFAULT_SLAVE_ID": "1"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+[project]
+name = "modbus-mcp"
+version = "0.1.0"
+description = "An MCP server that standardizes and contextualizes Modbus data, enabling seamless integration of AI agents with industrial IoT systems.e"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "pymodbus>=3.9.2",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+modbus-mcp = "modbus_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
