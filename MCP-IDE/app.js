@@ -1,5 +1,6 @@
 // Mock Data for Tool Tester
 const tools = [
+    // FINS Tools
     {
         name: "read_memory_area",
         description: "Read words from a specific memory area",
@@ -20,6 +21,7 @@ const tools = [
             { name: "values", type: "array", default: "[0, 0]" }
         ]
     },
+    // ADS Tools
     {
         name: "read_symbol",
         description: "Read a variable by symbol name",
@@ -37,12 +39,110 @@ const tools = [
             { name: "value", type: "number", default: 0 }
         ]
     },
+    // MODBUS Tools
     {
         name: "read_holding_registers",
         description: "Read holding registers",
         protocol: "MODBUS",
         args: [
             { name: "address", type: "number", default: 0 },
+            { name: "count", type: "number", default: 1 }
+        ]
+    },
+    {
+        name: "write_multiple_registers",
+        description: "Write multiple registers",
+        protocol: "MODBUS",
+        args: [
+            { name: "address", type: "number", default: 0 },
+            { name: "values", type: "array", default: "[0]" }
+        ]
+    },
+    // S7 Tools
+    {
+        name: "read_db",
+        description: "Read from a Data Block",
+        protocol: "S7",
+        args: [
+            { name: "db_number", type: "number", default: 1 },
+            { name: "start", type: "number", default: 0 },
+            { name: "size", type: "number", default: 2 }
+        ]
+    },
+    // EtherNet/IP Tools
+    {
+        name: "read_tag",
+        description: "Read a CIP tag",
+        protocol: "EIP",
+        args: [
+            { name: "tag_name", type: "string", default: "MyTag" }
+        ]
+    },
+    // PROFINET Tools
+    {
+        name: "read_record",
+        description: "Read data record",
+        protocol: "PN",
+        args: [
+            { name: "index", type: "number", default: 1 }
+        ]
+    },
+    // EtherCAT Tools
+    {
+        name: "read_sdo",
+        description: "Read SDO",
+        protocol: "ECAT",
+        args: [
+            { name: "index", type: "number", default: 0x1000 },
+            { name: "subindex", type: "number", default: 0 }
+        ]
+    },
+    // OPC UA Tools
+    {
+        name: "read_node",
+        description: "Read node value",
+        protocol: "OPC",
+        args: [
+            { name: "node_id", type: "string", default: "ns=2;s=Demo.Static.Scalar.Double" }
+        ]
+    },
+    // MQTT Tools
+    {
+        name: "publish_message",
+        description: "Publish a message to a topic",
+        protocol: "MQTT",
+        args: [
+            { name: "topic", type: "string", default: "factory/sensor1" },
+            { name: "payload", type: "string", default: "{ \"value\": 123 }" }
+        ]
+    },
+    // BACnet Tools
+    {
+        name: "read_property",
+        description: "Read object property",
+        protocol: "BAC",
+        args: [
+            { name: "object_type", type: "string", default: "analog-input" },
+            { name: "instance", type: "number", default: 1 }
+        ]
+    },
+    // DNP3 Tools
+    {
+        name: "read_point",
+        description: "Read data point",
+        protocol: "DNP3",
+        args: [
+            { name: "group", type: "number", default: 30 },
+            { name: "index", type: "number", default: 0 }
+        ]
+    },
+    // MELSEC Tools
+    {
+        name: "read_device",
+        description: "Read device memory",
+        protocol: "MC",
+        args: [
+            { name: "device", type: "string", default: "D100" },
             { name: "count", type: "number", default: 1 }
         ]
     }
@@ -181,6 +281,5 @@ function simulateToolExecution(tool) {
 
 function setupConnections() {
     // Placeholder for dynamic connection management
-    const connectionsList = document.getElementById('connections-list');
-    // Logic to add/remove connections would go here
+    // This is now handled by connections.js
 }

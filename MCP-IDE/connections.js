@@ -9,12 +9,21 @@ class ConnectionManager {
         if (saved) {
             this.connections = JSON.parse(saved);
         } else {
-            // Default connections for demo
+            // Default connections for all projects
             this.connections = [
                 { id: '1', name: 'Modbus TCP', protocol: 'MODBUS', host: '192.168.1.10', port: 502, status: 'connected' },
                 { id: '2', name: 'Siemens S7', protocol: 'S7', host: '192.168.1.20', port: 102, status: 'connected' },
                 { id: '3', name: 'Omron FINS', protocol: 'FINS', host: '192.168.1.30', port: 9600, status: 'connected' },
-                { id: '4', name: 'Beckhoff ADS', protocol: 'ADS', host: '127.0.0.1.1.1', port: 851, status: 'connected' }
+                { id: '4', name: 'Beckhoff ADS', protocol: 'ADS', host: '127.0.0.1.1.1', port: 851, status: 'connected' },
+                { id: '5', name: 'EtherNet/IP', protocol: 'EIP', host: '192.168.1.40', port: 44818, status: 'disconnected' },
+                { id: '6', name: 'PROFINET', protocol: 'PN', host: '192.168.1.50', port: 34964, status: 'disconnected' },
+                { id: '7', name: 'EtherCAT', protocol: 'ECAT', host: '192.168.1.60', port: 80, status: 'disconnected' },
+                { id: '8', name: 'PROFIBUS', protocol: 'PB', host: 'Gateway-01', port: 502, status: 'disconnected' },
+                { id: '9', name: 'DNP3', protocol: 'DNP3', host: '192.168.1.70', port: 20000, status: 'disconnected' },
+                { id: '10', name: 'BACnet/IP', protocol: 'BAC', host: '192.168.1.80', port: 47808, status: 'disconnected' },
+                { id: '11', name: 'Mitsubishi MELSEC', protocol: 'MC', host: '192.168.1.90', port: 5000, status: 'disconnected' },
+                { id: '12', name: 'OPC UA', protocol: 'OPC', host: 'opc.tcp://192.168.1.100:4840', port: 4840, status: 'disconnected' },
+                { id: '13', name: 'MQTT Broker', protocol: 'MQTT', host: 'broker.hivemq.com', port: 1883, status: 'disconnected' }
             ];
         }
         this.renderConnections();
@@ -46,7 +55,7 @@ class ConnectionManager {
             card.className = 'connection-card';
             card.innerHTML = `
                 <div class="conn-header">
-                    <div class="proto-icon ${conn.protocol.toLowerCase()}">${conn.protocol.substring(0, 2)}</div>
+                    <div class="proto-icon ${conn.protocol.toLowerCase()}">${conn.protocol.substring(0, 3)}</div>
                     <div class="conn-info">
                         <h3>${conn.name}</h3>
                         <span class="conn-meta">${conn.host}:${conn.port}</span>
@@ -74,8 +83,6 @@ class ConnectionManager {
             conn.status = conn.status === 'connected' ? 'disconnected' : 'connected';
             this.saveConnections();
             this.renderConnections();
-            // Trigger global event or update dashboard
-            updateDashboardStats();
         }
     }
 }
