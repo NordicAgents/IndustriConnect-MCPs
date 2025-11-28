@@ -1,0 +1,18 @@
+[project]
+name = "ads-mcp"
+version = "0.1.0"
+description = "MCP server for Beckhoff ADS Protocol"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "pyads>=3.4.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+ads-mcp = "ads_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
