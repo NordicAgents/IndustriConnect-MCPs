@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndustriConnect MCP Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <span class="logo-text">IndustriConnect</span>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active" data-tab="dashboard">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-tab="connections">
+                    <i class="fa-solid fa-plug"></i>
+                    <span>Connections</span>
+                </li>
+                <li data-tab="tools">
+                    <i class="fa-solid fa-terminal"></i>
+                    <span>Tool Tester</span>
+                </li>
+                <li data-tab="monitor">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Monitor</span>
+                </li>
+                <li data-tab="settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator online">
+                    <span class="dot"></span>
+                    <span class="text">System Online</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-bar">
+                <div class="breadcrumbs">
+                    <span class="crumb-root">Platform</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span class="crumb-current">Dashboard</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-icon"><i class="fa-regular fa-bell"></i></button>
+                    <div class="user-profile">
+                        <div class="avatar">MX</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Views -->
+            <div class="views-container">
+
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view active">
+                    <div class="view-header">
+                        <h1>Overview</h1>
+                        <p>System status and active connections</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="icon-box blue"><i class="fa-solid fa-server"></i></div>
+                            <div class="stat-info">
+                                <h3>Active Servers</h3>
+                                <div class="value">4</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-box green"><i class="fa-solid fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <h3>Healthy Routes</h3>
+                                <div class="value">12</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-box purple"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="stat-info">
+                                <h3>Ops / Sec</h3>
+                                <div class="value">45</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon-box orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="stat-info">
+                                <h3>Alerts</h3>
+                                <div class="value">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card wide">
+                            <div class="card-header">
+                                <h2>Active Protocols</h2>
+                                <button class="btn-text">View All</button>
+                            </div>
+                            <div class="protocol-list">
+                                <div class="protocol-item">
+                                    <div class="proto-icon modbus">MB</div>
+                                    <div class="proto-details">
+                                        <h4>Modbus TCP</h4>
+                                        <span class="status online">Connected</span>
+                                    </div>
+                                    <div class="proto-meta">
+                                        <span>Port: 502</span>
+                                        <span>192.168.1.10</span>
+                                    </div>
+                                </div>
+                                <div class="protocol-item">
+                                    <div class="proto-icon s7">S7</div>
+                                    <div class="proto-details">
+                                        <h4>Siemens S7</h4>
+                                        <span class="status online">Connected</span>
+                                    </div>
+                                    <div class="proto-meta">
+                                        <span>Rack: 0, Slot: 1</span>
+                                        <span>192.168.1.20</span>
+                                    </div>
+                                </div>
+                                <div class="protocol-item">
+                                    <div class="proto-icon fins">FN</div>
+                                    <div class="proto-details">
+                                        <h4>Omron FINS</h4>
+                                        <span class="status online">Connected</span>
+                                    </div>
+                                    <div class="proto-meta">
+                                        <span>UDP: 9600</span>
+                                        <span>192.168.1.30</span>
+                                    </div>
+                                </div>
+                                <div class="protocol-item">
+                                    <div class="proto-icon ads">AD</div>
+                                    <div class="proto-details">
+                                        <h4>Beckhoff ADS</h4>
+                                        <span class="status online">Connected</span>
+                                    </div>
+                                    <div class="proto-meta">
+                                        <span>AMS: 851</span>
+                                        <span>127.0.0.1.1.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Recent Activity</h2>
+                            </div>
+                            <div class="activity-feed">
+                                <div class="activity-item">
+                                    <div class="dot green"></div>
+                                    <div class="content">
+                                        <p><strong>ADS Server</strong> started successfully</p>
+                                        <span class="time">2 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="dot blue"></div>
+                                    <div class="content">
+                                        <p><strong>FINS</strong> read_memory_area executed</p>
+                                        <span class="time">5 mins ago</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="dot blue"></div>
+                                    <div class="content">
+                                        <p><strong>S7</strong> write_var executed</p>
+                                        <span class="time">12 mins ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connections View -->
+                <div id="connections-view" class="view">
+                    <div class="view-header">
+                        <h1>Connections</h1>
+                        <button class="btn-primary"><i class="fa-solid fa-plus"></i> New Connection</button>
+                    </div>
+                    <div class="connections-grid" id="connections-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Tool Tester View -->
+                <div id="tools-view" class="view">
+                    <div class="view-header">
+                        <h1>Tool Tester</h1>
+                    </div>
+                    <div class="tool-tester-layout">
+                        <div class="tool-sidebar">
+                            <div class="search-box">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" placeholder="Search tools...">
+                            </div>
+                            <div class="tool-list" id="tool-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div class="tool-workspace">
+                            <div class="tool-config-panel">
+                                <h3>Configuration</h3>
+                                <div id="tool-form">
+                                    <div class="empty-state">Select a tool to configure</div>
+                                </div>
+                                <div class="actions-row">
+                                    <button class="btn-primary" id="run-tool-btn" disabled>Run Tool</button>
+                                </div>
+                            </div>
+                            <div class="tool-output-panel">
+                                <h3>Output</h3>
+                                <pre id="tool-output" class="code-block">// Output will appear here...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitor View -->
+                <div id="monitor-view" class="view">
+                    <div class="view-header">
+                        <h1>Real-time Monitor</h1>
+                        <div class="actions">
+                            <button class="btn-secondary"><i class="fa-solid fa-pause"></i> Pause</button>
+                            <button class="btn-primary"><i class="fa-solid fa-plus"></i> Add Widget</button>
+                        </div>
+                    </div>
+                    <div class="monitor-grid">
+                        <div class="monitor-widget large">
+                            <div class="widget-header">
+                                <h3>Temperature Trends</h3>
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
+                            <div class="chart-container">
+                                <!-- Placeholder for Chart -->
+                                <div class="chart-placeholder">
+                                    <i class="fa-solid fa-chart-area"></i>
+                                    <span>Live Chart Visualization</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="monitor-widget">
+                            <div class="widget-header">
+                                <h3>Motor Status</h3>
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
+                            <div class="gauge-container">
+                                <div class="gauge-value">RUNNING</div>
+                                <div class="gauge-label">Main Conveyor</div>
+                            </div>
+                        </div>
+                        <div class="monitor-widget">
+                            <div class="widget-header">
+                                <h3>Production Rate</h3>
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
+                            <div class="metric-container">
+                                <div class="metric-value">1,240</div>
+                                <div class="metric-label">Units / Hour</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="connections.js"></script>
+    <script src="monitor.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
