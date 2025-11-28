@@ -1,0 +1,38 @@
+{
+  "name": "melsec-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for MELSEC MC protocol (TypeScript/Node).",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "melsec-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node build/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "melsec",
+    "mc-protocol",
+    "plc"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.2.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  },
+  "files": [
+    "build",
+    "README.md",
+    "mcp-config-example.json"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
