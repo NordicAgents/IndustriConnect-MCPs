@@ -1,0 +1,18 @@
+[project]
+name = "profinet-mock-server"
+version = "0.1.0"
+description = "Mock PROFINET IO device for MCP integration tests."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>=4.0.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+profinet-mock-server = "profinet_mock_device:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

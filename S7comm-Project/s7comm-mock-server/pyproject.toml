@@ -1,0 +1,19 @@
+[project]
+name = "s7comm-mock-server"
+version = "0.1.0"
+description = "Mock Siemens S7 PLC built on python-snap7 for MCP integration tests."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>=4.0.0",
+    "python-snap7>=1.3.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+s7comm-mock-server = "s7_mock_server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

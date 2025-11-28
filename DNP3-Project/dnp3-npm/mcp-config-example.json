@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "DNP3 MCP (Node)": {
+      "command": "dnp3-mcp",
+      "env": {
+        "DNP3_CONNECTION_TYPE": "tcp",
+        "DNP3_HOST": "127.0.0.1",
+        "DNP3_PORT": "20000"
+      }
+    }
+  }
+}

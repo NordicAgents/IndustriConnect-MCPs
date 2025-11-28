@@ -1,0 +1,39 @@
+{
+  "name": "profinet-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for PROFINET discovery and I/O (TypeScript/Node).",
+  "type": "module",
+  "main": "build/index.js",
+  "bin": {
+    "profinet-mcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node build/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "profinet",
+    "industrial",
+    "siemens"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.2.0",
+    "dotenv": "^16.4.5",
+    "fast-xml-parser": "^4.3.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  },
+  "files": [
+    "build",
+    "README.md",
+    "mcp-config-example.json"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,30 @@
+[project]
+name = "profibus-mcp"
+version = "0.1.0"
+description = "Model Context Protocol server for PROFIBUS DP/PA networks."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "IndustriConnect" }]
+dependencies = [
+    "anyio>=4.0.0",
+    "mcp[cli]>=1.6.0",
+    "pydantic>=2.6.0",
+    "python-dotenv>=1.1.0",
+    "pyserial>=3.5",
+    "lxml>=4.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.6.0",
+]
+
+[project.scripts]
+profibus-mcp = "profibus_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

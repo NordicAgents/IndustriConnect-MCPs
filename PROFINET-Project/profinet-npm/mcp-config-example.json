@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "PROFINET MCP (Node)": {
+      "command": "profinet-mcp",
+      "env": {
+        "PROFINET_INTERFACE": "eth0",
+        "PROFINET_CONTROLLER_IP": "192.168.1.1"
+      }
+    }
+  }
+}
