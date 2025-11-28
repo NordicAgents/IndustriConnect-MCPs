@@ -1,0 +1,18 @@
+[project]
+name = "ethernetip-mock-server"
+version = "0.1.0"
+description = "Mock EtherNet/IP PLC for integration testing."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>=4.0.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+ethernetip-mock-server = "eip_mock_server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
