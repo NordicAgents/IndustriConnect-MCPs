@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "EtherCAT MCP (Node)": {
+      "command": "ethercat-mcp",
+      "env": {
+        "ETHERCAT_INTERFACE": "eth0",
+        "ETHERCAT_CYCLE_TIME": "1000"
+      }
+    }
+  }
+}
