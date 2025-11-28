@@ -1,0 +1,17 @@
+[project]
+name = "fins-mcp"
+version = "0.1.0"
+description = "MCP server for Omron FINS Protocol"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+fins-mcp = "fins_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
