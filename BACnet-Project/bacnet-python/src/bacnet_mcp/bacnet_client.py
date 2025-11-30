@@ -45,10 +45,12 @@ class BACnetClient:
         self._opened = False
 
     async def ensure_open(self) -> None:
-        await anyio.to_thread.run_sync(self._open_client)
+        if not self._opened:
+            self._open_client()
 
     async def close(self) -> None:
-        await anyio.to_thread.run_sync(self._close_client)
+        if self._opened:
+            self._close_client()
 
     async def discover_devices(self, timeout_ms: int = 5000) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         await self.ensure_open()
@@ -107,7 +109,11 @@ class BACnetClient:
         with self._lock:
             if self._opened:
                 return
-            self._bacnet = BAC0.connect(ip=self.config.interface, device_id=self.config.device_instance)
+            self._bacnet = BAC0.connect(
+                ip=self.config.interface,
+                port=self.config.port,
+                deviceId=self.config.device_instance,
+            )
             self._opened = True
 
     def _close_client(self) -> None:
