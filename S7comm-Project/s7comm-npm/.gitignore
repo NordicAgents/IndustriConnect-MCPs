@@ -1,7 +1,0 @@
-node_modules/
-build/
-dist/
-.DS_Store
-.env
-.turbo/
-*.log
