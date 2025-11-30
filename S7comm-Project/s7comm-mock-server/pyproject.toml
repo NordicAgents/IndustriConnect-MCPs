@@ -17,3 +17,7 @@ s7comm-mock-server = "s7_mock_server:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["s7_mock_server.py"]
+

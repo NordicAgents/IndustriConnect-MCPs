@@ -268,7 +268,7 @@ class S7Client:
                         self.config.host,
                         self.config.rack,
                         self.config.slot,
-                        tcpport=self.config.port,
+                        tcp_port=self.config.port,
                     )
                     self._connected = True
                     return
