@@ -1,4 +1,9 @@
-"""DNP3 master wrapper built on pydnp3 (scaffold)."""
+"""DNP3 master wrapper built on pydnp3 (scaffold).
+
+For now, the implementation degrades gracefully to a mock backend when
+`pydnp3` is not installed, so the MCP server can run with synthetic data
+only.
+"""
 
 from __future__ import annotations
 
@@ -108,13 +113,16 @@ class DNP3Master:
     # -----------------------------
 
     def _open_master(self) -> None:
-        if opendnp3 is None:  # pragma: no cover - dependency guard
-            raise DNP3MasterError("pydnp3 (OpenDNP3 bindings) is not installed")
         with self._lock:
             if self._opened:
                 return
-            self._manager = opendnp3.DNP3Manager(1, opendnp3.ConsoleLogger().Create())
-            # For scaffold we avoid real channel creation; fill in later.
+            if opendnp3 is not None:
+                # Real backend: initialize the OpenDNP3 manager.
+                self._manager = opendnp3.DNP3Manager(1, opendnp3.ConsoleLogger().Create())
+                # For scaffold we avoid real channel creation; fill in later.
+            else:
+                # Mock backend: no-op manager, synthetic data only.
+                self._manager = None
             self._opened = True
 
     def _close_master(self) -> None:
