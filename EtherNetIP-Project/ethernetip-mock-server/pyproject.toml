@@ -16,3 +16,6 @@ ethernetip-mock-server = "eip_mock_server:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["eip_mock_server.py"]

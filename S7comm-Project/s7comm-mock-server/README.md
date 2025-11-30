@@ -4,6 +4,13 @@ Lightweight Siemens S7 mock built with `python-snap7`. It registers a handful of
 
 ## Usage
 
+
+Docker
+
+```bash
+sh run_docker.sh
+```
+OR 
 ```bash
 uv sync
 uv run s7comm-mock-server

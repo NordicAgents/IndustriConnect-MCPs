@@ -46,7 +46,8 @@ class EthercatMCPServer:
 
     @asynccontextmanager
     async def _lifespan(self, server: FastMCP) -> AsyncIterator[AppContext]:  # noqa: ARG002
-        await self.master.ensure_open()
+        # Don't open interface at startup - open lazily when tools need it
+        # This allows the server to start even without EtherCAT hardware available
         try:
             yield AppContext(master=self.master)
         finally:

@@ -56,7 +56,7 @@ DNP3-Project/
 - **Python**: 3.10+
 - **Package Manager**: uv (modern, fast dependency manager)
 - **MCP SDK**: `mcp[cli]>=1.6.0`
-- **DNP3 Protocol**: `pydnp3>=0.2.3` or `opendnp3` bindings
+- **DNP3 Protocol**: optional `pydnp3`/`opendnp3` bindings (scaffold currently uses synthetic data)
 - **Serial Communication**: `pyserial>=3.5` (for serial DNP3)
 - **Environment**: `python-dotenv>=1.1.0`
 - **Build System**: hatchling

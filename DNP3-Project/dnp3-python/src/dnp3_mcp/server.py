@@ -28,7 +28,7 @@ class DNP3MCPServer:
         self.point_map = PointMap(self.tool_config.point_map_path)
         self._server = FastMCP(
             name="DNP3 MCP Server",
-            dependencies=["pydnp3"],
+            dependencies=[],
             lifespan=self._lifespan,
         )
         resources = ToolResources(
