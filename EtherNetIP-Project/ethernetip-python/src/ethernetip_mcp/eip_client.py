@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import threading
 import time
@@ -33,6 +34,7 @@ class EIPClientConfig:
     port: int = 44818
     slot: int = 0
     path: Optional[str] = None
+    json_bridge: bool = False
     timeout: float = 10.0
     max_retries: int = 3
     retry_backoff_base: float = 0.5
@@ -49,6 +51,7 @@ class EIPClientConfig:
             port=int(os.getenv("ENIP_PORT", "44818")),
             slot=int(os.getenv("ENIP_SLOT", "0")),
             path=os.getenv("ENIP_PATH"),
+            json_bridge=_env_bool("ENIP_JSON_BRIDGE", False),
             timeout=float(os.getenv("ENIP_TIMEOUT", "10")),
             max_retries=int(os.getenv("ENIP_MAX_RETRIES", "3")),
             retry_backoff_base=float(os.getenv("ENIP_RETRY_BACKOFF_BASE", "0.5")),
@@ -75,6 +78,8 @@ class EIPClient:
         self._tag_cache: Optional[Tuple[float, Any]] = None
 
     async def ensure_connection(self) -> None:
+        if self.config.json_bridge:
+            return
         await anyio.to_thread.run_sync(self._connect_sync)
 
     async def close(self) -> None:
@@ -85,6 +90,8 @@ class EIPClient:
     # -----------------------------
 
     async def read_tag(self, tag: str, count: Optional[int] = None) -> OperationResult:
+        if self.config.json_bridge:
+            return await self._json_read_tag(tag, count)
         label = f"read_tag({tag})"
         return await anyio.to_thread.run_sync(
             self._execute_with_retry,
@@ -93,6 +100,8 @@ class EIPClient:
         )
 
     async def write_tag(self, tag: str, value: Any, data_type: Optional[str] = None) -> OperationMeta:
+        if self.config.json_bridge:
+            return await self._json_write_tag(tag, value, data_type)
         label = f"write_tag({tag})"
         _, meta = await anyio.to_thread.run_sync(
             self._execute_with_retry,
@@ -102,6 +111,8 @@ class EIPClient:
         return meta
 
     async def get_tag_list(self, program: Optional[str] = None) -> OperationResult:
+        if self.config.json_bridge:
+            return await self._json_get_tag_list(program)
         label = "get_tag_list" if not program else f"get_tag_list({program})"
         return await anyio.to_thread.run_sync(
             self._execute_with_retry,
@@ -130,6 +141,9 @@ class EIPClient:
         return await _fetch()
 
     async def get_plc_time(self) -> OperationResult:
+        if self.config.json_bridge:
+            now = time.time()
+            return {"plc_time": now}, {"backend": "json", "operation": "get_plc_time"}
         return await anyio.to_thread.run_sync(
             self._execute_with_retry,
             "get_plc_time",
@@ -137,6 +151,8 @@ class EIPClient:
         )
 
     async def set_plc_time(self, timestamp: Optional[Any] = None) -> OperationMeta:
+        if self.config.json_bridge:
+            return {"backend": "json", "operation": "set_plc_time", "updated": True}
         _, meta = await anyio.to_thread.run_sync(
             self._execute_with_retry,
             "set_plc_time",
@@ -145,6 +161,8 @@ class EIPClient:
         return meta
 
     async def read_multiple_tags(self, tags: list[str]) -> OperationResult:
+        if self.config.json_bridge:
+            return await self._json_read_multiple_tags(tags)
         return await anyio.to_thread.run_sync(
             self._execute_with_retry,
             "read_multiple_tags",
@@ -152,6 +170,8 @@ class EIPClient:
         )
 
     async def write_multiple_tags(self, payloads: Dict[str, Any]) -> OperationMeta:
+        if self.config.json_bridge:
+            return await self._json_write_multiple_tags(payloads)
         _, meta = await anyio.to_thread.run_sync(
             self._execute_with_retry,
             "write_multiple_tags",
@@ -173,23 +193,113 @@ class EIPClient:
     # Internal helpers
     # -----------------------------
 
+    async def _json_request(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            stream = await anyio.connect_tcp(self.config.host, self.config.port)
+        except Exception as exc:
+            message = f"JSON bridge connection failed to {self.config.host}:{self.config.port}: {exc}"
+            raise EIPClientError(message) from exc
+        async with stream:
+            try:
+                await stream.send(json.dumps(payload).encode("utf-8") + b"\n")
+                # Read until newline manually since anyio SocketStream doesn't have receive_until
+                raw = b""
+                while True:
+                    chunk = await stream.receive(65536)
+                    if not chunk:
+                        break
+                    raw += chunk
+                    if b"\n" in raw:
+                        raw = raw.split(b"\n", 1)[0]
+                        break
+            except Exception as exc:
+                raise EIPClientError(f"JSON bridge I/O error: {exc}") from exc
+        try:
+            return json.loads(raw.decode("utf-8"))
+        except Exception as exc:
+            raise EIPClientError(f"JSON bridge decode error: {exc}") from exc
+
+    async def _json_read_tag(self, tag: str, count: Optional[int] = None) -> OperationResult:  # noqa: ARG002 - count reserved for parity
+        response = await self._json_request({"op": "read", "tag": tag})
+        if not response.get("success"):
+            raise EIPClientError(response.get("error") or "Mock server read failed")
+        data = response.get("data") or {}
+        result = {
+            "tag": data.get("tag", tag),
+            "value": data.get("value"),
+            "type": data.get("data_type"),
+            "status": None,
+            "error": None,
+        }
+        meta: OperationMeta = {"backend": "json", "operation": "read_tag", "tag": tag}
+        return result, meta
+
+    async def _json_write_tag(self, tag: str, value: Any, data_type: Optional[str]) -> OperationMeta:
+        payload: Dict[str, Any] = {"op": "write", "tag": tag, "value": value}
+        if data_type:
+            payload["data_type"] = data_type
+        response = await self._json_request(payload)
+        if not response.get("success"):
+            raise EIPClientError(response.get("error") or "Mock server write failed")
+        meta: OperationMeta = {"backend": "json", "operation": "write_tag", "tag": tag}
+        return meta
+
+    async def _json_get_tag_list(self, program: Optional[str] = None) -> OperationResult:  # noqa: ARG002 - program unsupported in mock
+        response = await self._json_request({"op": "list"})
+        if not response.get("success"):
+            raise EIPClientError(response.get("error") or "Mock server list failed")
+        data = response.get("data") or []
+        meta: OperationMeta = {
+            "backend": "json",
+            "operation": "get_tag_list",
+            "count": len(data),
+        }
+        return data, meta
+
+    async def _json_read_multiple_tags(self, tags: list[str]) -> OperationResult:
+        results = []
+        for tag in tags:
+            result, _ = await self._json_read_tag(tag)
+            results.append(result)
+        meta: OperationMeta = {
+            "backend": "json",
+            "operation": "read_multiple_tags",
+            "count": len(results),
+        }
+        return results, meta
+
+    async def _json_write_multiple_tags(self, payloads: Dict[str, Any]) -> OperationMeta:
+        for tag, value in payloads.items():
+            await self._json_write_tag(tag, value, None)
+        meta: OperationMeta = {
+            "backend": "json",
+            "operation": "write_multiple_tags",
+            "count": len(payloads),
+        }
+        return meta
+
     def _ensure_driver(self) -> LogixDriver:
         if LogixDriver is None:  # pragma: no cover - runtime guard
             raise EIPClientError(
                 "pycomm3 is not installed. Install pycomm3 to communicate with EtherNet/IP controllers."
             )
         if self._driver is None:
-            params = {
-                "host": self.config.host,
-                "slot": self.config.slot,
-                "port": self.config.port,
+            if self.config.path:
+                connection_path = self.config.path
+            elif self.config.slot and not self.config.micro800:
+                connection_path = f"{self.config.host}/{self.config.slot}"
+            else:
+                connection_path = self.config.host
+
+            driver_kwargs: Dict[str, Any] = {
                 "timeout": self.config.timeout,
             }
-            if self.config.path:
-                params["path"] = self.config.path
+            if self.config.port:
+                driver_kwargs["port"] = self.config.port
             if self.config.micro800:
-                params["micro800"] = True
-            self._driver = LogixDriver(**params)
+                driver_kwargs["micro800"] = True
+
+            self._driver = LogixDriver(connection_path, **driver_kwargs)
         return self._driver
 
     def _connect_sync(self) -> None:

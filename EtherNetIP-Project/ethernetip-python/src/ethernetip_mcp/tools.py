@@ -134,7 +134,7 @@ def register_tools(server: FastMCP, resources: ToolResources) -> None:
             return {
                 "tag": result.get("tag"),
                 "value": result.get("value"),
-                "data_type": result.get("type"),
+                "data_type": result.get("type") or result.get("data_type"),
                 "status": result.get("status"),
                 "error": result.get("error"),
             }

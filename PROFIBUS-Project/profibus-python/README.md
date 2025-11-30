@@ -15,6 +15,13 @@ uv sync
 PROFIBUS_PORT=/dev/ttyUSB0 PROFIBUS_BAUDRATE=500000 uv run profibus-mcp
 ```
 
+For development without a real serial adapter, enable mock mode. This skips opening the serial port and uses the in-process mock data paths:
+
+```bash
+uv sync
+PROFIBUS_MOCK=true uv run profibus-mcp
+```
+
 Set environment variables (or `.env`) for master address, retries, GSD path, write/config toggles, and optional slave map path. See `docs/roadmap/PROFIBUS_PLAN.md` for the full list.
 
 ## Layout
