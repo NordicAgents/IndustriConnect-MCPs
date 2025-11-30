@@ -175,6 +175,7 @@ PROFIBUS-Project/
 PROFIBUS_PORT=/dev/ttyUSB0       # Serial port (default: /dev/ttyUSB0)
 PROFIBUS_BAUDRATE=500000         # Baud rate (9600, 19200, 93750, 187500, 500000, 1500000, 3000000, 6000000, 12000000)
 PROFIBUS_ADAPTER_TYPE=CP5611     # Adapter type (CP5611, USB, etc.)
+PROFIBUS_MOCK=false              # When true (or PROFIBUS_PORT=mock), skip serial and use in-process mock master
 
 # Master Settings
 PROFIBUS_MASTER_ADDRESS=2        # Master station address (default: 2)
