@@ -196,38 +196,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ethernetip-mcp"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "anyio" },
-    { name = "mcp", extra = ["cli"] },
-    { name = "pycomm3" },
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "anyio", specifier = ">=4.0.0" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
-    { name = "pycomm3", specifier = ">=1.2.14" },
-    { name = "pydantic", specifier = ">=2.6.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.2.0" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
-    { name = "python-dotenv", specifier = ">=1.1.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.0" },
-]
-provides-extras = ["dev"]
-
-[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -386,15 +354,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
-]
-
-[[package]]
-name = "pycomm3"
-version = "1.2.14"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3f/b2/df114dbd89e5d76b0095c4d10b981da11d788962fe325e6df349fe31698b/pycomm3-1.2.14.tar.gz", hash = "sha256:ffabe89cda3df733fc046e261c15d263134f2f35d7dbb6aedf788203a10615b7", size = 82534, upload-time = "2023-08-27T15:50:12.516Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/51/b6311236a3799e2432343a249f6f6628f4160b44881381433739c85eccd2/pycomm3-1.2.14-py3-none-any.whl", hash = "sha256:49cd78b13bddf2ff234f77dc1d9048f5e139ac6fa2b77c7320aa2b90eb5c4ace", size = 99070, upload-time = "2023-08-27T15:50:10.849Z" },
 ]
 
 [[package]]
@@ -603,6 +562,18 @@ wheels = [
 ]
 
 [[package]]
+name = "python-snap7"
+version = "2.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/dd/0cc58674f7cd718804424bfb80bac84c8dc5fb40adc3a7630f3ea6bb6f4e/python_snap7-2.0.2.tar.gz", hash = "sha256:10714da0d198f2c51b521c79dc00a0e273ae42c0abc5d44605a298266960d016", size = 53415, upload-time = "2024-11-03T08:49:26.884Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/db/c1ec4701b1ade7cd017ab5c16aa66b8c9de8300252d1f82bd3ad39507825/python_snap7-2.0.2-py3-none-macosx_10_9_universal2.whl", hash = "sha256:ef46a030597014c6bd82dd7ec5b5b40817cb60f649d7370cab0c327636843e7d", size = 192555, upload-time = "2024-11-03T08:49:20.409Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/2a/512579993f491cb4924602a2e834f3cc4193a7e83a541454224c1faf0568/python_snap7-2.0.2-py3-none-manylinux_2_28_aarch64.whl", hash = "sha256:b0238f71b83d94d5196437091fec7a0ce635baf7a43a0664561f5b2ecaf5a7f8", size = 349565, upload-time = "2024-11-03T08:49:22.154Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/3c/8c09fe93282c1d094641b6a567a9dea3053c6d05c942c22aa956a0bdb29d/python_snap7-2.0.2-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:f893f363fdecaa21cf4b0f2648d2c71e30d2924e4f58f0993a6a59a818bdf96e", size = 145147, upload-time = "2024-11-03T08:49:23.635Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/bf/c3e14d59fdd8e430798d667d881adc661a89e77a80ed6e670d3c692fd779/python_snap7-2.0.2-py3-none-win_amd64.whl", hash = "sha256:686e62b087a57c121758cba724ece2fb178d86a8e79f512bb40bf5160a6be833", size = 155574, upload-time = "2024-11-03T08:49:25.362Z" },
+]
+
+[[package]]
 name = "pywin32"
 version = "311"
 source = { registry = "https://pypi.org/simple" }
@@ -781,6 +752,38 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a8/b5/d0b7d145963136b564806f6584647af45ab98946660d399ec4da79cae036/ruff-0.14.7-py3-none-win_amd64.whl", hash = "sha256:e17a20ad0d3fad47a326d773a042b924d3ac31c6ca6deb6c72e9e6b5f661a7c6", size = 14531726, upload-time = "2025-11-28T20:54:59.121Z" },
     { url = "https://files.pythonhosted.org/packages/1d/d2/1637f4360ada6a368d3265bf39f2cf737a0aaab15ab520fc005903e883f8/ruff-0.14.7-py3-none-win_arm64.whl", hash = "sha256:be4d653d3bea1b19742fcc6502354e32f65cd61ff2fbdb365803ef2c2aec6228", size = 13609215, upload-time = "2025-11-28T20:55:15.375Z" },
 ]
+
+[[package]]
+name = "s7comm-mcp"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "anyio" },
+    { name = "mcp", extra = ["cli"] },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "python-snap7" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "anyio", specifier = ">=4.0.0" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
+    { name = "pydantic", specifier = ">=2.6.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.2.0" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
+    { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "python-snap7", specifier = ">=1.3.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.0" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "shellingham"
