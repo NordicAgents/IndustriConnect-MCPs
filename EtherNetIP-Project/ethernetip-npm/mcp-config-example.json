@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "EtherNet/IP MCP (Node)": {
+      "command": "ethernetip-mcp",
+      "env": {
+        "ENIP_HOST": "127.0.0.1",
+        "ENIP_SLOT": "0",
+        "ENIP_PORT": "44818"
+      }
+    }
+  }
+}

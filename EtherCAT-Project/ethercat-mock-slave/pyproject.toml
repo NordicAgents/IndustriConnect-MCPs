@@ -1,0 +1,18 @@
+[project]
+name = "ethercat-mock-slave"
+version = "0.1.0"
+description = "Mock EtherCAT slave for MCP integration testing."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>=4.0.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+ethercat-mock-slave = "ethercat_mock_slave:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "MELSEC MCP (Node)": {
+      "command": "melsec-mcp",
+      "env": {
+        "MC_HOST": "192.168.1.10",
+        "MC_PORT": "5007",
+        "MC_PROTOCOL_TYPE": "3E"
+      }
+    }
+  }
+}

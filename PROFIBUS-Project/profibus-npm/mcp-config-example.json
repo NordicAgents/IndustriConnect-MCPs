@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "PROFIBUS MCP (Node)": {
+      "command": "profibus-mcp",
+      "env": {
+        "PROFIBUS_PORT": "/dev/ttyUSB0",
+        "PROFIBUS_BAUDRATE": "500000",
+        "PROFIBUS_MASTER_ADDRESS": "2"
+      }
+    }
+  }
+}

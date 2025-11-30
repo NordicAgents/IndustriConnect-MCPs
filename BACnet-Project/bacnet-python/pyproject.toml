@@ -1,0 +1,29 @@
+[project]
+name = "bacnet-mcp"
+version = "0.1.0"
+description = "Model Context Protocol server for BACnet/IP building automation."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "IndustriConnect" }]
+dependencies = [
+    "anyio>=4.0.0",
+    "mcp[cli]>=1.6.0",
+    "pydantic>=2.6.0",
+    "python-dotenv>=1.1.0",
+    "BAC0>=23.9.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.6.0",
+]
+
+[project.scripts]
+bacnet-mcp = "bacnet_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
