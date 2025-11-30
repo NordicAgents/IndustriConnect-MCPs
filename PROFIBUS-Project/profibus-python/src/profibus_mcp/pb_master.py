@@ -29,6 +29,13 @@ class ProfibusConfig:
     retry_backoff_base: float = float(os.getenv("PROFIBUS_RETRY_BACKOFF_BASE", "0.1"))
     writes_enabled: bool = _env_bool("PROFIBUS_WRITES_ENABLED", True)
     config_cmds_enabled: bool = _env_bool("PROFIBUS_CONFIG_CMDS_ENABLED", False)
+    mock_mode: bool = _env_bool("PROFIBUS_MOCK", False)
+
+    def __post_init__(self) -> None:
+        # Allow a simple sentinel to enable mock mode without touching PROFIBUS_MOCK
+        # e.g. PROFIBUS_PORT=mock
+        if self.port.strip().lower() in {"mock", "none"}:
+            object.__setattr__(self, "mock_mode", True)
 
 
 class ProfibusMasterError(RuntimeError):
@@ -45,9 +52,13 @@ class ProfibusMaster:
         self._slaves: Dict[int, Dict[str, Any]] = {}
 
     async def ensure_open(self) -> None:
+        if self.config.mock_mode:
+            return
         await anyio.to_thread.run_sync(self._open_port)
 
     async def close(self) -> None:
+        if self.config.mock_mode:
+            return
         await anyio.to_thread.run_sync(self._close_port)
 
     async def scan_bus(self) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -110,6 +121,8 @@ class ProfibusMaster:
     # -----------------------------
 
     def _open_port(self) -> None:
+        if self.config.mock_mode:
+            return
         with self._lock:
             if self._serial and self._serial.is_open:
                 return
@@ -123,6 +136,8 @@ class ProfibusMaster:
                 raise ProfibusMasterError(f"Failed to open serial port {self.config.port}: {exc}") from exc
 
     def _close_port(self) -> None:
+        if self.config.mock_mode:
+            return
         with self._lock:
             if self._serial and self._serial.is_open:
                 self._serial.close()
