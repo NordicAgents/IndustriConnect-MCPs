@@ -1,0 +1,18 @@
+[project]
+name = "dnp3-mock-outstation"
+version = "0.1.0"
+description = "Mock DNP3 outstation for MCP integration tests."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anyio>=4.0.0",
+    "rich>=13.7.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.scripts]
+dnp3-mock-outstation = "dnp3_mock_outstation:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

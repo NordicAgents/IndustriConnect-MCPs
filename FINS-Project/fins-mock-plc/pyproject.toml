@@ -1,0 +1,14 @@
+[project]
+name = "fins-mock-plc"
+version = "0.1.0"
+description = "Mock Omron PLC for FINS Protocol testing"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+fins-mock-plc = "fins_mock_plc:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

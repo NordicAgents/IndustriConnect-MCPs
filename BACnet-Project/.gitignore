@@ -1,0 +1,28 @@
+# Python / uv
+.venv/
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+
+# Node / TypeScript
+node_modules/
+build/
+dist/
+coverage/
+npm-debug.log*
+yarn-error.log*
+.turbo/
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Misc
+*.tmp
+*.lock.bak
