@@ -4,6 +4,7 @@ export interface ChatMessage {
   content: string;
   timestamp: Date;
   error?: boolean;
+  toolCalls?: import('./types/mcp-types').MCPToolCall[];
 }
 
 export interface ChatSession {

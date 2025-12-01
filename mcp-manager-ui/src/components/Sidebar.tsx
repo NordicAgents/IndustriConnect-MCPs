@@ -6,24 +6,39 @@ import {
   Moon,
   Sun,
   MessageCircle,
+  Server,
+  Settings,
 } from 'lucide-react';
 import { ChatSession } from '../types';
+import { MCPServer } from '../types/mcp-types';
 import { format } from 'date-fns';
 import { useTheme } from './ThemeProvider';
+import MCPServerList from './MCPServerList';
 
 interface SidebarProps {
   sessions: ChatSession[];
   selectedSessionId: string | null;
   onSelectSession: (sessionId: string | null) => void;
+  mcpServers: MCPServer[];
+  onMCPConnect: (serverId: string) => void;
+  onMCPDisconnect: (serverId: string) => void;
+  onMCPConfigOpen: () => void;
 }
 
 export default function Sidebar({
   sessions,
   selectedSessionId,
   onSelectSession,
+  mcpServers,
+  onMCPConnect,
+  onMCPDisconnect,
+  onMCPConfigOpen,
 }: SidebarProps) {
   const [sessionsExpanded, setSessionsExpanded] = useState(true);
+  const [mcpExpanded, setMcpExpanded] = useState(true);
   const { theme, toggleTheme } = useTheme();
+
+  const connectedCount = mcpServers.filter(s => s.status === 'connected').length;
 
   return (
     <div className="w-72 border-r border-border bg-background flex flex-col h-screen">
@@ -60,6 +75,47 @@ export default function Sidebar({
 
       {/* Sections */}
       <div className="flex-1 overflow-y-auto">
+        {/* MCP Servers Section */}
+        <div className="border-b border-border">
+          <button
+            onClick={() => setMcpExpanded(!mcpExpanded)}
+            className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-accent/30 transition-all group"
+          >
+            <div className="flex items-center gap-2">
+              <Server className="w-4 h-4 text-muted-foreground" />
+              <span className="font-medium text-sm">MCP Servers</span>
+              {connectedCount > 0 && (
+                <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                  {connectedCount}
+                </span>
+              )}
+            </div>
+            {mcpExpanded ? (
+              <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-muted-foreground transition-transform" />
+            )}
+          </button>
+          {mcpExpanded && (
+            <div>
+              <MCPServerList
+                servers={mcpServers}
+                onConnect={onMCPConnect}
+                onDisconnect={onMCPDisconnect}
+              />
+              <div className="px-4 py-2 border-t border-border">
+                <button
+                  onClick={onMCPConfigOpen}
+                  className="w-full px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 rounded-md transition-colors flex items-center justify-center gap-2"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  Configure Servers
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Sessions Section */}
         <div className="border-b border-border">
           <button

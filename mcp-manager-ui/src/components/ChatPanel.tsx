@@ -86,8 +86,8 @@ export default function ChatPanel({
       const models: string[] =
         Array.isArray(data?.models) && data.models.length > 0
           ? data.models
-              .map((model: any) => model?.name)
-              .filter((name: unknown): name is string => typeof name === 'string')
+            .map((model: any) => model?.name)
+            .filter((name: unknown): name is string => typeof name === 'string')
           : [];
 
       setOllamaModels(models);
@@ -418,6 +418,41 @@ export default function ChatPanel({
                           <div className="whitespace-pre-wrap text-sm leading-relaxed break-words">
                             {message.content}
                           </div>
+
+                          {/* Tool Calls Display */}
+                          {message.toolCalls && message.toolCalls.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {message.toolCalls.map((toolCall, idx) => (
+                                <div
+                                  key={toolCall.id || idx}
+                                  className="text-xs bg-primary/5 border border-primary/20 rounded-lg p-2"
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <Zap className="w-3 h-3 text-primary" />
+                                    <span className="font-medium text-primary">
+                                      {toolCall.toolName}
+                                    </span>
+                                    <span className="text-muted-foreground">
+                                      on {toolCall.serverName}
+                                    </span>
+                                  </div>
+                                  {Object.keys(toolCall.arguments).length > 0 && (
+                                    <div className="text-muted-foreground font-mono text-[11px] mt-1">
+                                      Args: {JSON.stringify(toolCall.arguments)}
+                                    </div>
+                                  )}
+                                  {toolCall.result && (
+                                    <div className="mt-1.5 pt-1.5 border-t border-primary/10">
+                                      <div className="text-muted-foreground">
+                                        {toolCall.result.content?.[0]?.text ||
+                                          (toolCall.result.success ? 'Success' : 'Failed')}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
                           {/* Timestamp and Actions */}
                           <div className={`flex items-center gap-2 mt-2 ${isUser ? 'justify-end' : 'justify-between'

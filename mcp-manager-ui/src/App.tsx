@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import Sidebar from './components/Sidebar';
 import ChatPanel from './components/ChatPanel';
+import MCPServerConfigPanel from './components/MCPServerConfig';
 import {
   ChatMessage,
   ChatSession,
@@ -9,6 +10,7 @@ import {
   CloudLLMConfig,
   OllamaConfig,
 } from './types';
+import { MCPServer, MCPServersConfig } from './types/mcp-types';
 import {
   loadSessions,
   saveSessions,
@@ -19,6 +21,12 @@ import {
   loadOllamaConfig,
   saveOllamaConfig,
 } from './utils/storage';
+import {
+  loadMCPServersConfig,
+  saveMCPServersConfig,
+  configToServers,
+} from './utils/mcp-storage';
+import { mcpClientManager } from './utils/mcp-client';
 import { getTheme, setTheme } from './utils/theme';
 import { format } from 'date-fns';
 import { callCloudLLM, callOllama } from './utils/llm';
@@ -36,12 +44,18 @@ function AppContent() {
   );
   const [ollamaConfig, setOllamaConfig] = useState<OllamaConfig | null>(null);
 
+  // MCP state
+  const [mcpConfig, setMcpConfig] = useState<MCPServersConfig>({ mcpServers: {} });
+  const [mcpServers, setMcpServers] = useState<MCPServer[]>([]);
+  const [showMCPConfig, setShowMCPConfig] = useState(false);
+
   // Load data from localStorage on mount
   useEffect(() => {
     const loadedSessions = loadSessions();
     const loadedChatBackend = loadChatBackend();
     const loadedCloudConfig = loadCloudLLMConfig();
     const loadedOllamaConfig = loadOllamaConfig();
+    const loadedMCPConfig = loadMCPServersConfig();
 
     setSessions(loadedSessions);
     setChatBackend(loadedChatBackend);
@@ -52,9 +66,24 @@ function AppContent() {
       setOllamaConfig(loadedOllamaConfig);
     }
 
+    // Load MCP configuration
+    setMcpConfig(loadedMCPConfig);
+    const servers = configToServers(loadedMCPConfig);
+    servers.forEach(server => {
+      mcpClientManager.addServer(server);
+    });
+    setMcpServers(servers);
+
     // Initialize theme
     const currentTheme = getTheme();
     setTheme(currentTheme);
+
+    // Listen for MCP connection changes
+    const unsubscribe = mcpClientManager.onConnectionChange((updatedServers) => {
+      setMcpServers(updatedServers);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Save sessions to localStorage whenever they change
@@ -80,6 +109,45 @@ function AppContent() {
     setSelectedSessionId(sessionId);
     // In this simplified UI we clear messages when switching sessions.
     setMessages([]);
+  };
+
+  // MCP Server handlers
+  const handleMCPConnect = async (serverId: string) => {
+    try {
+      await mcpClientManager.connectToServer(serverId);
+    } catch (error) {
+      console.error('Failed to connect to MCP server:', error);
+    }
+  };
+
+  const handleMCPDisconnect = async (serverId: string) => {
+    try {
+      await mcpClientManager.disconnectFromServer(serverId);
+    } catch (error) {
+      console.error('Failed to disconnect from MCP server:', error);
+    }
+  };
+
+  const handleMCPConfigChange = (newConfig: MCPServersConfig) => {
+    setMcpConfig(newConfig);
+    saveMCPServersConfig(newConfig);
+
+    // Update MCP client manager with new configuration
+    const servers = configToServers(newConfig);
+
+    // Remove old servers
+    mcpClientManager.getServers().forEach(server => {
+      if (!servers.find(s => s.id === server.id)) {
+        mcpClientManager.removeServer(server.id);
+      }
+    });
+
+    // Add/update servers
+    servers.forEach(server => {
+      mcpClientManager.addServer(server);
+    });
+
+    setMcpServers(mcpClientManager.getServers());
   };
 
   const handleSendMessage = async (content: string) => {
@@ -108,25 +176,27 @@ function AppContent() {
     }
 
     try {
-      let assistantContent: string | null = null;
+      let assistantResponse: { content: string; toolCalls?: any[] } | null = null;
 
       if (chatBackend === 'cloud-llm' && cloudLLMConfig) {
-        assistantContent = await callCloudLLM(allMessages, cloudLLMConfig);
+        assistantResponse = await callCloudLLM(allMessages, cloudLLMConfig);
       } else if (chatBackend === 'ollama' && ollamaConfig) {
-        assistantContent = await callOllama(allMessages, ollamaConfig);
+        const ollamaResult = await callOllama(allMessages, ollamaConfig);
+        assistantResponse = { content: ollamaResult };
       } else {
         throw new Error('Chat backend is not configured.');
       }
 
-      if (!assistantContent) {
+      if (!assistantResponse || !assistantResponse.content) {
         throw new Error('Model returned an empty response');
       }
 
       const response: ChatMessage = {
         id: `msg-${now + 1}`,
         role: 'assistant',
-        content: assistantContent,
+        content: assistantResponse.content,
         timestamp: new Date(),
+        toolCalls: assistantResponse.toolCalls,
       };
 
       setMessages((prev) => [...prev, response]);
@@ -168,6 +238,10 @@ function AppContent() {
         sessions={sessions}
         selectedSessionId={selectedSessionId}
         onSelectSession={handleSelectSession}
+        mcpServers={mcpServers}
+        onMCPConnect={handleMCPConnect}
+        onMCPDisconnect={handleMCPDisconnect}
+        onMCPConfigOpen={() => setShowMCPConfig(true)}
       />
       <ChatPanel
         messages={messages}
@@ -180,6 +254,13 @@ function AppContent() {
         ollamaConfig={ollamaConfig}
         onOllamaConfigChange={setOllamaConfig}
       />
+      {showMCPConfig && (
+        <MCPServerConfigPanel
+          config={mcpConfig}
+          onConfigChange={handleMCPConfigChange}
+          onClose={() => setShowMCPConfig(false)}
+        />
+      )}
     </div>
   );
 }

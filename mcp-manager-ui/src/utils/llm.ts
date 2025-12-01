@@ -1,4 +1,6 @@
 import { ChatMessage, CloudLLMConfig, OllamaConfig } from '../types';
+import { MCPTool, MCPToolCall } from '../types/mcp-types';
+import { mcpClientManager } from './mcp-client';
 
 const buildPromptFromMessages = (messages: ChatMessage[]): string => {
   const sorted = [...messages].sort(
@@ -41,11 +43,28 @@ const getCloudApiKey = (config: CloudLLMConfig): string => {
   return envKey;
 };
 
+/**
+ * Convert MCP tools to OpenAI function format
+ */
+const convertMCPToolsToOpenAI = (mcpTools: MCPTool[]) => {
+  return mcpTools.map(tool => ({
+    type: 'function' as const,
+    function: {
+      name: tool.name,
+      description: tool.description || '',
+      parameters: tool.inputSchema,
+    },
+  }));
+};
+
+/**
+ * Call OpenAI with support for MCP tools
+ */
 const callOpenAIChat = async (
   messages: ChatMessage[],
   config: CloudLLMConfig,
-): Promise<string> => {
-  const prompt = buildPromptFromMessages(messages);
+  mcpTools: MCPTool[] = [],
+): Promise<{ content: string; toolCalls?: MCPToolCall[] }> => {
   const baseUrl = (config.baseUrl || 'https://api.openai.com/v1').replace(
     /\/$/,
     '',
@@ -53,21 +72,56 @@ const callOpenAIChat = async (
 
   const apiKey = getCloudApiKey(config);
 
+  // Convert chat messages to OpenAI format
+  const toolSystemMessage =
+    mcpTools.length > 0
+      ? {
+          role: 'system',
+          content:
+            'You have access to external MCP tools for industrial protocols (MQTT, OPC UA, etc.). ' +
+            'Use these tools whenever the user asks you to read, write, browse, or call methods on field devices, PLCs, or other industrial systems, ' +
+            'instead of guessing.\n\n' +
+            'OPC UA NodeId reminder: numeric ids use the form ns=<namespace>;i=<integer> (for example, ns=2;i=2). ' +
+            'String ids must use ns=<namespace>;s=<string> (for example, ns=2;s=TEMP_NODE_ID). ' +
+            'Never put non-numeric values after i=.\n\n' +
+            'Available tools:\n' +
+            mcpTools
+              .map(
+                (tool) =>
+                  `- ${tool.name}${
+                    tool.description ? `: ${tool.description}` : ''
+                  }`,
+              )
+              .join('\n'),
+        }
+      : null;
+
+  const openaiMessages = [
+    ...(toolSystemMessage ? [toolSystemMessage] : []),
+    ...messages.map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+    })),
+  ];
+
+  const requestBody: any = {
+    model: config.model,
+    messages: openaiMessages,
+  };
+
+  // Add tools if available
+  if (mcpTools.length > 0) {
+    requestBody.tools = convertMCPToolsToOpenAI(mcpTools);
+    requestBody.tool_choice = 'auto';
+  }
+
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
     },
-    body: JSON.stringify({
-      model: config.model,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    }),
+    body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
@@ -76,20 +130,98 @@ const callOpenAIChat = async (
   }
 
   const data: any = await response.json();
-  const content =
-    data?.choices?.[0]?.message?.content?.toString().trim() || '';
+  const choice = data?.choices?.[0];
+
+  if (!choice) {
+    throw new Error('OpenAI returned no choices');
+  }
+
+  // Check if the model wants to call tools
+  if (choice.message?.tool_calls && choice.message.tool_calls.length > 0) {
+    const toolCalls: MCPToolCall[] = [];
+
+    // Execute each tool call
+    for (const toolCall of choice.message.tool_calls) {
+      const functionName = toolCall.function.name;
+      const functionArgs = JSON.parse(toolCall.function.arguments);
+
+      // Find which MCP server has this tool
+      const servers = mcpClientManager.getServers();
+      let serverId: string | undefined;
+      let serverName: string | undefined;
+
+      for (const server of servers) {
+        if (server.tools?.some(t => t.name === functionName)) {
+          serverId = server.id;
+          serverName = server.name;
+          break;
+        }
+      }
+
+      if (!serverId || !serverName) {
+        console.error(`Tool ${functionName} not found in any connected MCP server`);
+        continue;
+      }
+
+      // Execute the tool
+      const result = await mcpClientManager.callTool(serverId, functionName, functionArgs);
+
+      toolCalls.push({
+        id: toolCall.id,
+        toolName: functionName,
+        serverId,
+        serverName,
+        arguments: functionArgs,
+        result,
+        timestamp: new Date(),
+      });
+    }
+
+    // Format tool results as text for the response
+    const toolResultsText = toolCalls
+      .map(tc => {
+        const resultText = tc.result?.content?.[0]?.text || JSON.stringify(tc.result);
+        return `Tool ${tc.toolName} result: ${resultText}`;
+      })
+      .join('\n\n');
+
+    return {
+      content: toolResultsText || 'Tools executed successfully',
+      toolCalls,
+    };
+  }
+
+  // No tool calls, return regular response
+  const content = choice.message?.content?.toString().trim() || '';
 
   if (!content) {
     throw new Error('OpenAI returned an empty response');
   }
 
-  return content;
+  return { content };
+};
+
+
+/**
+ * Get all available MCP tools from connected servers
+ */
+const getAllMCPTools = (): MCPTool[] => {
+  const allTools: MCPTool[] = [];
+  const servers = mcpClientManager.getServers();
+
+  for (const server of servers) {
+    if (server.status === 'connected' && server.tools) {
+      allTools.push(...server.tools);
+    }
+  }
+
+  return allTools;
 };
 
 const callGemini = async (
   messages: ChatMessage[],
   config: CloudLLMConfig,
-): Promise<string> => {
+): Promise<{ content: string; toolCalls?: MCPToolCall[] }> => {
   const prompt = buildPromptFromMessages(messages);
   const apiKey = getCloudApiKey(config);
 
@@ -127,13 +259,13 @@ const callGemini = async (
     throw new Error('Gemini returned an empty response');
   }
 
-  return content;
+  return { content };
 };
 
 const callAnthropic = async (
   messages: ChatMessage[],
   config: CloudLLMConfig,
-): Promise<string> => {
+): Promise<{ content: string; toolCalls?: MCPToolCall[] }> => {
   const prompt = buildPromptFromMessages(messages);
   const apiKey = getCloudApiKey(config);
 
@@ -176,16 +308,19 @@ const callAnthropic = async (
     throw new Error('Anthropic returned an empty response');
   }
 
-  return content;
+  return { content };
 };
 
 export const callCloudLLM = async (
   messages: ChatMessage[],
   config: CloudLLMConfig,
-): Promise<string> => {
+): Promise<{ content: string; toolCalls?: MCPToolCall[] }> => {
+  // Get available MCP tools
+  const mcpTools = getAllMCPTools();
+
   switch (config.provider) {
     case 'openai':
-      return callOpenAIChat(messages, config);
+      return callOpenAIChat(messages, config, mcpTools);
     case 'gemini':
       return callGemini(messages, config);
     case 'anthropic':
