@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import {
   ChatMessage,
-  MCPConfig,
   ChatBackend,
   CloudLLMConfig,
   OllamaConfig,
@@ -20,8 +19,7 @@ import { format } from 'date-fns';
 
 interface ChatPanelProps {
   messages: ChatMessage[];
-  connectedMCPs: MCPConfig[];
-  onSendMessage: (message: string, mcpId?: string) => void;
+  onSendMessage: (message: string) => void;
   isLoading?: boolean;
   chatBackend: ChatBackend;
   onChatBackendChange: (backend: ChatBackend) => void;
@@ -33,7 +31,6 @@ interface ChatPanelProps {
 
 export default function ChatPanel({
   messages,
-  connectedMCPs,
   onSendMessage,
   isLoading = false,
   chatBackend,
@@ -44,15 +41,12 @@ export default function ChatPanel({
   onOllamaConfigChange,
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
-  const [selectedMCP, setSelectedMCP] = useState<string | 'all'>('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
   const [isLoadingOllamaModels, setIsLoadingOllamaModels] = useState(false);
   const [ollamaError, setOllamaError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const hasMCPConnection = connectedMCPs.length > 0;
   const activeCloudProvider = cloudLLMConfig?.provider || 'openai';
   const envCloudApiKey =
     activeCloudProvider === 'openai'
@@ -68,11 +62,7 @@ export default function ChatPanel({
   );
 
   const canSend =
-    chatBackend === 'mcp'
-      ? hasMCPConnection
-      : chatBackend === 'cloud-llm'
-        ? isCloudConfigured
-        : isOllamaConfigured;
+    chatBackend === 'cloud-llm' ? isCloudConfigured : isOllamaConfigured;
 
   const effectiveOllamaBaseUrl =
     ollamaConfig?.baseUrl || 'http://localhost:11434';
@@ -134,8 +124,7 @@ export default function ChatPanel({
     e.preventDefault();
     if (!input.trim() || isLoading || !canSend) return;
 
-    const mcpId = selectedMCP === 'all' ? undefined : selectedMCP;
-    onSendMessage(input.trim(), mcpId);
+    onSendMessage(input.trim());
     setInput('');
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
@@ -177,10 +166,10 @@ export default function ChatPanel({
   };
 
   const examplePrompts = [
-    "Read holding registers from address 0",
-    "What MCPs are currently connected?",
-    "Show me the system status",
-    'Execute a test command',
+    'Explain this piece of code',
+    'Summarize the key points from a document',
+    'Help me debug a configuration issue',
+    'Suggest test cases for this feature',
   ];
 
   const inputPlaceholder =
@@ -190,13 +179,7 @@ export default function ChatPanel({
         : envCloudApiKey
           ? 'Select provider and model above to start chatting...'
           : 'Select provider, model and API key above to start chatting...'
-      : chatBackend === 'ollama'
-        ? isOllamaConfigured
-          ? 'Ask the local Ollama model anything... (Enter to send, Shift+Enter for new line)'
-          : 'Ensure Ollama is running and select a model above to start chatting...'
-        : hasMCPConnection
-          ? 'Ask me anything... (Enter to send, Shift+Enter for new line)'
-          : 'Connect an MCP to start chatting...';
+      : 'Ask the local Ollama model anything... (Enter to send, Shift+Enter for new line)';
 
   return (
     <div className="flex-1 flex flex-col h-screen bg-gradient-to-b from-background to-background">
@@ -208,36 +191,16 @@ export default function ChatPanel({
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
-              {connectedMCPs.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-background rounded-full animate-pulse" />
-              )}
             </div>
             <div>
-              <h2 className="text-base font-semibold tracking-tight">MCP Chat</h2>
-              {connectedMCPs.length > 0 ? (
-                <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  {connectedMCPs.length} MCP{connectedMCPs.length !== 1 ? 's' : ''} connected
-                </p>
-              ) : (
-                <p className="text-xs text-muted-foreground mt-0.5">No active connections</p>
-              )}
+              <h2 className="text-base font-semibold tracking-tight">
+                LLM Chat
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Chat with cloud or local LLMs
+              </p>
             </div>
           </div>
-          {connectedMCPs.length > 0 && (
-            <select
-              value={selectedMCP}
-              onChange={(e) => setSelectedMCP(e.target.value)}
-              className="text-xs px-3 py-1.5 border border-border rounded-md bg-background hover:bg-accent/30 transition-all focus:outline-none focus:ring-2 focus:ring-ring font-medium shadow-sm"
-            >
-              <option value="all">All MCPs</option>
-              {connectedMCPs.map((mcp) => (
-                <option key={mcp.id} value={mcp.id}>
-                  {mcp.name}
-                </option>
-              ))}
-            </select>
-          )}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
           <div className="flex items-center gap-2">
@@ -250,7 +213,6 @@ export default function ChatPanel({
               }
               className="px-2 py-1 border border-border rounded-md bg-background hover:bg-accent/30 focus:outline-none focus:ring-1 focus:ring-ring"
             >
-              <option value="mcp">MCP only</option>
               <option value="cloud-llm">Cloud LLM (ChatGPT / Gemini / Claude)</option>
               <option value="ollama">Local Ollama</option>
             </select>
@@ -388,28 +350,28 @@ export default function ChatPanel({
               </div>
               <h3 className="text-lg font-semibold mb-2">Start a conversation</h3>
               <p className="text-sm text-muted-foreground mb-6">
-                Ask questions, send commands, or interact with your connected industrial protocol servers and AI models.
+                Ask questions, brainstorm ideas, or get help from cloud and local language models.
               </p>
 
-              {connectedMCPs.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Try these examples:</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {examplePrompts.map((prompt, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleExamplePrompt(prompt)}
-                        className="text-left px-4 py-3 text-sm border border-border rounded-lg hover:bg-accent/50 hover:border-primary/50 transition-all group flex items-start gap-2"
-                      >
-                        <Zap className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground group-hover:text-foreground transition-colors">
-                          {prompt}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+              <div className="space-y-3">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Try these examples:
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {examplePrompts.map((prompt, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleExamplePrompt(prompt)}
+                      className="text-left px-4 py-3 text-sm border border-border rounded-lg hover:bg-accent/50 hover:border-primary/50 transition-all group flex items-start gap-2"
+                    >
+                      <Zap className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                        {prompt}
+                      </span>
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         ) : (
@@ -442,16 +404,6 @@ export default function ChatPanel({
                   {/* Message Bubble */}
                   <div className={`flex-1 group ${isUser ? 'flex justify-end' : 'flex justify-start'}`}>
                     <div className={`max-w-[85%] ${isUser ? 'order-1' : 'order-2'}`}>
-                      {/* MCP Name Badge */}
-                      {message.mcpId && !isUser && showAvatar && (
-                        <div className="flex items-center gap-1.5 mb-2 ml-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                          <span className="text-xs font-semibold text-muted-foreground">
-                            {connectedMCPs.find((m) => m.id === message.mcpId)?.name || 'Unknown MCP'}
-                          </span>
-                        </div>
-                      )}
-
                       <div className="relative">
                         <div
                           className={`rounded-2xl px-4 py-3 ${isUser
@@ -545,11 +497,6 @@ export default function ChatPanel({
                 )}
               </button>
             </div>
-            {chatBackend === 'mcp' && !hasMCPConnection && (
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                Add and connect an MCP from the sidebar to begin
-              </p>
-            )}
             {chatBackend === 'cloud-llm' && !isCloudConfigured && (
               <p className="text-xs text-muted-foreground mt-2 text-center">
                 {envCloudApiKey

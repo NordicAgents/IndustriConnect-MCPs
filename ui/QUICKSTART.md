@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-cd mcp-manager-ui
+cd ui
 npm install
 ```
 
@@ -17,40 +17,38 @@ The application will automatically open in your browser at `http://localhost:300
 
 ## First Steps
 
-1. **Add Your First MCP Configuration**
-   - Click the "Add MCP" button in the sidebar
-   - Select a protocol type (e.g., MODBUS, MQTT, OPC UA)
-   - Configure the connection settings:
-     - For MODBUS: Set host (127.0.0.1), port (502), and slave ID
-     - For MQTT: Set broker URL, client ID, and Sparkplug settings
-     - For OPC UA: Set server URL
-   - Click "Save"
+1. **Choose a Chat Backend**
+   - In the chat header, pick:
+     - `Cloud LLM (ChatGPT / Gemini / Claude)`, or
+     - `Local Ollama`
 
-2. **Connect to an MCP**
-   - Hover over an MCP configuration in the sidebar
-   - Click the zap icon (⚡) to connect
-   - Wait for the connection indicator (green dot)
+2. **Configure Cloud LLMs**
+   - Select a provider (OpenAI, Gemini, Anthropic)
+   - Pick a model from the dropdown
+   - Provide an API key either via `.env` (`VITE_OPENAI_API_KEY`, `VITE_GEMINI_API_KEY`, `VITE_ANTHROPIC_API_KEY`) or directly in the UI
 
-3. **Start Chatting**
-   - Once connected, you can start typing messages in the chat panel
-   - Select "All MCPs" or a specific MCP from the dropdown
-   - Type your message and press Enter to send
-   - Responses will appear in the chat
+3. **Configure Ollama**
+   - Ensure Ollama is running locally (default: `http://localhost:11434`)
+   - Use the URL field and model dropdown to select a model
 
-4. **Manage Sessions**
-   - Sessions are automatically created when you start chatting
+4. **Start Chatting**
+   - Type a message in the input box
+   - Press `Enter` to send, `Shift+Enter` for a new line
+   - Copy responses using the copy button on assistant messages
+
+5. **Manage Sessions**
+   - Sessions are created automatically when you start chatting
    - View all sessions in the sidebar under "Sessions"
-   - Click on a session to view its history
+   - Click a session to switch to it
 
-5. **Toggle Dark/Light Mode**
+6. **Toggle Dark/Light Mode**
    - Click the moon/sun icon in the top-right of the sidebar
    - The theme preference is saved automatically
 
 ## Features Overview
 
-- ✅ Configure multiple MCP servers
-- ✅ Connect/disconnect from MCPs
-- ✅ Chat with connected MCPs
+- ✅ Chat with cloud LLMs (OpenAI / Gemini / Claude)
+- ✅ Chat with local LLMs via Ollama
 - ✅ Session management
 - ✅ Dark/light mode
 - ✅ Persistent storage (localStorage)
@@ -61,18 +59,12 @@ The application will automatically open in your browser at `http://localhost:300
 - Ensure Node.js 18+ is installed: `node --version`
 - Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
 
-**Can't connect to MCP:**
-- Verify the MCP server is running
-- Check connection settings (host, port, etc.)
-- Ensure the MCP command is correct (e.g., `npx`, `modbus-mcp`)
-
 **Theme not working:**
 - Clear browser cache and reload
 - Check browser console for errors
 
 ## Next Steps
 
-- Integrate with actual MCP servers
-- Add WebSocket support for real-time communication
-- Implement command autocomplete
-- Add export/import functionality
+- Add streaming responses
+- Implement command/prompt templates
+- Add export/import functionality for sessions

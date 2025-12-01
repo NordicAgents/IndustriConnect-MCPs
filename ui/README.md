@@ -1,25 +1,16 @@
-# MCP Manager UI
+# LLM Chat UI
 
-A modern, intuitive interface for configuring and connecting multiple Model Context Protocol (MCP) servers in the IndustriConnect ecosystem. Built with React, TypeScript, and Tailwind CSS.
+A modern, intuitive chat interface for working with local and third‑party language models in the IndustriConnect ecosystem. Built with React, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- 🎨 **Beautiful UI** - Modern interface inspired by Claude Code with clean design
-- 🌓 **Dark/Light Mode** - Seamless theme switching with system preference detection
-- 🔌 **Multiple MCP Support** - Configure and manage multiple industrial protocol MCPs:
-  - BACnet
-  - DNP3
-  - EtherCAT
-  - EtherNet/IP
-  - MODBUS
-  - MQTT (with Sparkplug B)
-  - OPC UA
-  - PROFIBUS
-  - PROFINET
-  - S7comm
-- 💬 **Interactive Chat** - Chat with connected MCPs and send commands
-- 📝 **Session Management** - Track and manage conversation sessions
-- 💾 **Local Storage** - Persistent configuration and session history
+- 🎨 **Beautiful UI** – Modern interface inspired by Claude Code with clean design  
+- 🌓 **Dark/Light Mode** – Seamless theme switching with system preference detection  
+- ☁️ **Cloud LLM Support** – Talk to OpenAI (ChatGPT), Google Gemini, and Anthropic Claude  
+- 💻 **Local LLM Support (Ollama)** – Chat with local models running via Ollama  
+- 💬 **Interactive Chat** – Streaming‑style conversational UI with copy‑to‑clipboard  
+- 📝 **Session Management** – Simple session list to keep track of conversations  
+- 💾 **Local Storage** – Remembers chat backend and LLM configuration between visits
 
 ## Getting Started
 
@@ -30,7 +21,7 @@ A modern, intuitive interface for configuring and connecting multiple Model Cont
 ### Installation
 
 ```bash
-cd mcp-manager-ui
+cd ui
 npm install
 ```
 
@@ -56,43 +47,45 @@ npm run preview
 
 ## Usage
 
-1. **Add an MCP Configuration**
-   - Click "Add MCP" in the sidebar
-   - Select the protocol type
-   - Configure connection settings (host, port, etc.)
-   - Save the configuration
+1. **Choose a Chat Backend**
+   - In the top bar of the chat panel, select:
+     - `Cloud LLM (ChatGPT / Gemini / Claude)` or  
+     - `Local Ollama`
 
-2. **Connect to an MCP**
-   - Click the zap icon next to an MCP configuration to connect
-   - Connected MCPs will show a green indicator
+2. **Configure Cloud LLMs**
+   - Select a provider (OpenAI, Gemini, Anthropic)
+   - Pick a model from the dropdown
+   - Provide an API key either:
+     - via `.env` file (`VITE_OPENAI_API_KEY`, `VITE_GEMINI_API_KEY`, `VITE_ANTHROPIC_API_KEY`), or  
+     - directly in the UI when prompted
 
-3. **Start Chatting**
-   - Select or create a session
-   - Type messages in the chat panel
-   - Choose to message all MCPs or a specific one
-   - Send commands and interact with your industrial protocol servers
+3. **Configure Ollama**
+   - Ensure Ollama is running locally (default: `http://localhost:11434`)
+   - Select or refresh the model list in the header
 
-4. **Manage Sessions**
-   - View all your conversation sessions in the sidebar
-   - Click on a session to view its history
-   - Sessions are automatically created when you start chatting
+4. **Start Chatting**
+   - Type your message in the input box
+   - Press `Enter` to send, `Shift+Enter` for a new line
+   - Click the copy icon on assistant messages to copy responses
+
+5. **Manage Sessions**
+   - Sessions are created automatically when you start chatting
+   - Use the sidebar to switch between sessions
 
 ## Project Structure
 
 ```
-mcp-manager-ui/
+ui/
 ├── src/
 │   ├── components/        # React components
-│   │   ├── Sidebar.tsx    # Left sidebar with configs and sessions
+│   │   ├── Sidebar.tsx    # Left sidebar with sessions and theme toggle
 │   │   ├── ChatPanel.tsx  # Right panel for chat interface
-│   │   ├── MCPConfigModal.tsx  # Modal for configuring MCPs
 │   │   └── ThemeProvider.tsx   # Theme context provider
-│   ├── data/              # Static data and templates
-│   │   └── mcpTemplates.ts    # MCP type definitions and defaults
 │   ├── types.ts           # TypeScript type definitions
 │   ├── utils/             # Utility functions
 │   │   ├── theme.ts       # Theme management
-│   │   └── storage.ts     # LocalStorage helpers
+│   │   ├── storage.ts     # LocalStorage helpers
+│   │   └── llm.ts         # Cloud/Ollama LLM helpers
 │   ├── App.tsx            # Main application component
 │   └── main.tsx           # Entry point
 ├── index.html
@@ -100,24 +93,12 @@ mcp-manager-ui/
 └── vite.config.ts
 ```
 
-## Customization
-
-### Adding a New MCP Type
-
-1. Add the MCP type to `src/types.ts` in the `MCPType` union
-2. Add configuration template in `src/data/mcpTemplates.ts`:
-   - Add to `MCP_TYPES` array
-   - Add default environment variables in `getDefaultEnvForType`
-
 ## Future Enhancements
 
-- [ ] Real MCP server connection (currently simulated)
-- [ ] WebSocket-based communication with MCP servers
-- [ ] Export/import configurations
-- [ ] Command history and autocomplete
+- [ ] Streaming responses
+- [ ] Per-session message history persistence
+- [ ] Command/Prompt templates
 - [ ] Multi-tab support for multiple sessions
-- [ ] Real-time MCP status monitoring
-- [ ] Logs viewer for MCP communications
 
 ## License
 

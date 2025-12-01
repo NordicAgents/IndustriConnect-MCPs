@@ -1,42 +1,17 @@
-import {
-  MCPConfig,
-  MCPSession,
-  ChatBackend,
-  CloudLLMConfig,
-  OllamaConfig,
-} from '../types';
+import { ChatSession, ChatBackend, CloudLLMConfig, OllamaConfig } from '../types';
 
 const STORAGE_KEYS = {
-  MCP_CONFIGS: 'mcp_configs',
-  SESSIONS: 'mcp_sessions',
+  SESSIONS: 'chat_sessions',
   CHAT_BACKEND: 'chat_backend',
   CLOUD_LLM_CONFIG: 'cloud_llm_config',
   OLLAMA_CONFIG: 'ollama_config',
 } as const;
 
-export const saveMCPConfigs = (configs: MCPConfig[]) => {
-  localStorage.setItem(STORAGE_KEYS.MCP_CONFIGS, JSON.stringify(configs));
-};
-
-export const loadMCPConfigs = (): MCPConfig[] => {
-  const stored = localStorage.getItem(STORAGE_KEYS.MCP_CONFIGS);
-  if (!stored) return [];
-  try {
-    return JSON.parse(stored).map((config: any) => ({
-      ...config,
-      lastConnected: config.lastConnected ? new Date(config.lastConnected) : undefined,
-      tools: Array.isArray(config.tools) ? config.tools : [],
-    }));
-  } catch {
-    return [];
-  }
-};
-
-export const saveSessions = (sessions: MCPSession[]) => {
+export const saveSessions = (sessions: ChatSession[]) => {
   localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(sessions));
 };
 
-export const loadSessions = (): MCPSession[] => {
+export const loadSessions = (): ChatSession[] => {
   const stored = localStorage.getItem(STORAGE_KEYS.SESSIONS);
   if (!stored) return [];
   try {
@@ -58,10 +33,10 @@ export const loadChatBackend = (): ChatBackend => {
   const stored = localStorage.getItem(
     STORAGE_KEYS.CHAT_BACKEND,
   ) as ChatBackend | null;
-  if (stored === 'cloud-llm' || stored === 'ollama' || stored === 'mcp') {
+  if (stored === 'cloud-llm' || stored === 'ollama') {
     return stored;
   }
-  return 'mcp';
+  return 'cloud-llm';
 };
 
 export const saveCloudLLMConfig = (config: CloudLLMConfig | null) => {
