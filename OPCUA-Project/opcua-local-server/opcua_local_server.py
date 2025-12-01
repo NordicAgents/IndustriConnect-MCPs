@@ -389,10 +389,11 @@ class IndustrialControlSystem:
         self.system_state['humidity'] = max(20, min(80, base_humidity + random.uniform(-3.0, 3.0)))
         
         # Motor speed influenced by production rate
-        if self.system_state['production_rate'] > 0:
-            self.system_state['motor_speed'] = 1500.0 + (self.system_state['production_rate'] * 10.0) + random.uniform(-50.0, 50.0)
+        if self.system_state['production_rate'] > 0 and not self.system_state['emergency_stop']:
+            self.system_state['motor_speed'] = max(0.0, 1500.0 + (self.system_state['production_rate'] * 10.0) + random.uniform(-50.0, 50.0))
         else:
-            self.system_state['motor_speed'] = random.uniform(-10.0, 10.0)
+            # Motor stops when production stops or emergency stop is active
+            self.system_state['motor_speed'] = 0.0
     
     def _process_actuator_effects(self):
         """Process effects of actuator changes."""
