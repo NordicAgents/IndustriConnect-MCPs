@@ -51,12 +51,7 @@ export default function MCPConfigModal({
         type === 'MQTT'
           ? ['mqtt-mcp']
           : type === 'OPC UA'
-            ? [
-                '--directory',
-                '/Users/mx/Documents/IndustriConnect-MCPs/OPCUA-Project/opcua-mcp-server',
-                'run',
-                'opcua-mcp-server.py',
-              ]
+            ? ['opcua-mcp-npx-server']
             : undefined,
       env: getDefaultEnvForType(type),
       tools: getDefaultToolsForType(type),

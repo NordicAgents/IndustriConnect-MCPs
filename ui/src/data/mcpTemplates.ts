@@ -11,8 +11,8 @@ export const MCP_TYPES: {
   { type: 'EtherNet/IP', description: 'EtherNet/IP Protocol', defaultCommand: 'ethernetip-mcp' },
   { type: 'MODBUS', description: 'MODBUS Protocol', defaultCommand: 'modbus-mcp' },
   { type: 'MQTT', description: 'MQTT + Sparkplug B', defaultCommand: 'npx' },
-  // For OPC UA we default to the uv-based server used in this repo
-  { type: 'OPC UA', description: 'OPC UA Protocol', defaultCommand: 'uv' },
+  // For OPC UA we default to the NPX-based server (opcua-mcp-npx-server)
+  { type: 'OPC UA', description: 'OPC UA Protocol', defaultCommand: 'npx' },
   { type: 'PROFIBUS', description: 'PROFIBUS Protocol', defaultCommand: 'profibus-mcp' },
   { type: 'PROFINET', description: 'PROFINET Protocol', defaultCommand: 'profinet-mcp' },
   { type: 'S7comm', description: 'S7comm Protocol', defaultCommand: 's7comm-mcp' },
@@ -108,12 +108,7 @@ export const createDefaultMCPConfig = (type: MCPType, name: string): MCPConfig =
       type === 'MQTT'
         ? ['mqtt-mcp']
         : type === 'OPC UA'
-          ? [
-              '--directory',
-              '/Users/mx/Documents/IndustriConnect-MCPs/OPCUA-Project/opcua-mcp-server',
-              'run',
-              'opcua-mcp-server.py',
-            ]
+          ? ['opcua-mcp-npx-server']
           : undefined,
     env: getDefaultEnvForType(type),
     enabled: false,
