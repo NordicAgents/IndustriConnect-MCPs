@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "MQTT MCP (Python)": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/mx/Documents/Work/industriAgents/IndustriConnect-MCPs/MQTT-Project/mqtt-python",
+        "run",
+        "mqtt-mcp"
+      ],
+      "env": {
+        "MQTT_BROKER_URL": "mqtt://127.0.0.1:1883",
+        "MQTT_CLIENT_ID": "mqtt-mcp-cursor",
+        "SPARKPLUG_GROUP_ID": "factory",
+        "SPARKPLUG_EDGE_NODE_ID": "edge-node-1"
+      }
+    },
+    "OPCUA MCP (Python)": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/mx/Documents/Work/industriAgents/IndustriConnect-MCPs/OPCUA-Project/opcua-mcp-server",
+        "run",
+        "opcua-mcp-server.py"
+      ],
+      "env": {
+        "OPCUA_SERVER_URL": "opc.tcp://localhost:4840"
+      }
+    }
+  }
+}
