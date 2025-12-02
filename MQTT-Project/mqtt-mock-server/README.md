@@ -99,12 +99,10 @@ Once the mock server is running on port 1883, connect your MCP server:
 cd mqtt-mock-server
 uv run mqtt-mock-server
 
-# Terminal 2 - Start MCP server
-cd ../mqtt-npm
-export MQTT_BROKER_URL=127.0.0.1
-export MQTT_BROKER_PORT=1883
-npm run build
-node build/index.js
+# Terminal 2 - Start MCP server (Python)
+cd ../mqtt-python
+export MQTT_BROKER_URL=mqtt://127.0.0.1:1883
+uv run mqtt-mcp
 ```
 
 Then use MCP tools to:
@@ -169,4 +167,3 @@ The mock server:
 - `paho-mqtt>=1.6.1` - MQTT client
 - `sparkplug-b>=1.0.12` - Sparkplug B protobuf definitions
 - `protobuf>=4.24.0` - Protobuf serialization
-

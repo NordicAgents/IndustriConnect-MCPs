@@ -1,6 +1,6 @@
 # s7comm-python
 
-Python implementation of the Siemens S7 MCP server. It exposes the same tool set as the TypeScript runtime but is built with `uv`, `mcp[cli]`, and `python-snap7`. The CLI entry point is `s7comm-mcp`.
+Python implementation of the Siemens S7 MCP server built with `uv`, `mcp[cli]`, and `python-snap7`. The CLI entry point is `s7comm-mcp`.
 
 ## Prerequisites
 
