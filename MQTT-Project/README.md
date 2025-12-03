@@ -1,12 +1,9 @@
 # MQTT + Sparkplug B MCP Project
 
-A Model Context Protocol (MCP) server suite for MQTT and Sparkplug B that lets AI agents and MCP‑compatible apps publish, subscribe, and manage industrial IoT messaging. This repository contains:
+A Model Context Protocol (MCP) server for MQTT and Sparkplug B that lets AI agents and MCP‑compatible apps publish, subscribe, and manage industrial IoT messaging. This repository contains:
 
 - **mqtt-python** - Full‑featured Python MCP server using FastMCP (uv managed)
-- **mqtt-npm** - NPX‑friendly MCP server built with TypeScript/Node.js
 - **mqtt-mock-server** - Python-based MQTT broker simulator with Sparkplug B edge node simulation
-
-Both MCP servers expose the same tool names and semantics so you can pick the runtime that fits your stack.
 
 ## Features
 
@@ -41,7 +38,6 @@ Both MCP servers expose the same tool names and semantics so you can pick the ru
 ```
 MQTT-Project/
 ├── mqtt-python/           — Python MCP server (mqtt-mcp entrypoint)
-├── mqtt-npm/              — NPX/Node MCP server (mqtt-mcp bin)
 ├── mqtt-mock-server/      — Local MQTT simulator (default port 1883)
 └── README.md              — This file
 ```
@@ -56,7 +52,7 @@ uv sync
 uv run mqtt-mock-server  # listens on 127.0.0.1:1883
 ```
 
-### 2. Run an MCP server (choose Python or NPX)
+### 2. Run the MCP server (Python)
 
 **Python (uv):**
 ```bash
@@ -68,18 +64,7 @@ uv sync
 uv run mqtt-mcp
 ```
 
-**Node/NPX (local build):**
-```bash
-cd ../mqtt-npm
-npm install
-npm run build
-MQTT_BROKER_URL=mqtt://127.0.0.1:1883 \
-SPARKPLUG_GROUP_ID=factory \
-SPARKPLUG_EDGE_NODE_ID=edge-node-1 \
-node build/index.js
-```
-
-Both servers communicate over stdio as per MCP.
+Both the MCP server and mock broker communicate over stdio/TCP as per MCP.
 
 ## MCP Client Examples
 
@@ -101,24 +86,6 @@ Both servers communicate over stdio as per MCP.
   }
 }
 ```
-
-**NPX server (Node):**
-```json
-{
-  "mcpServers": {
-    "MQTT MCP (NPX)": {
-      "command": "mqtt-mcp",
-      "env": {
-        "MQTT_BROKER_URL": "mqtt://127.0.0.1:1883",
-        "SPARKPLUG_GROUP_ID": "factory",
-        "SPARKPLUG_EDGE_NODE_ID": "edge-node-1"
-      }
-    }
-  }
-}
-```
-
-For local builds, use `"command": "node"` and set `"args"` to the absolute path of `mqtt-npm/build/index.js`.
 
 ### MCP Inspector / CLI
 
@@ -506,11 +473,6 @@ Sparkplug B supports the following metric data types:
 - From `mqtt-python`: `uv sync`, then `uv run mqtt-mcp`
 - Uses FastMCP for async tool handlers
 
-### Node/TypeScript Version
-
-- From `mqtt-npm`: `npm install`, `npm run build`, then `node build/index.js`
-- Uses @modelcontextprotocol/sdk
-
 ### Mock Server
 
 - From `mqtt-mock-server`: `uv sync`, then `uv run mqtt-mock-server`
@@ -574,4 +536,3 @@ See individual package folders for license details.
 - [MCP Documentation](https://modelcontextprotocol.io/)
 - [paho-mqtt Python Library](https://github.com/eclipse/paho.mqtt.python)
 - [Eclipse Tahu Sparkplug Libraries](https://github.com/eclipse/tahu)
-

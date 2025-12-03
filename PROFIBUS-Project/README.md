@@ -1,6 +1,6 @@
 # PROFIBUS MCP Project
 
-MCP-based tooling for Siemens PROFIBUS DP/PA networks. This repository mirrors the MODBUS/S7/EtherCAT stacks with Python and TypeScript runtimes plus a mock slave so AI agents can scan the bus, exchange cyclic data, and inspect diagnostics safely.
+MCP-based tooling for Siemens PROFIBUS DP/PA networks. This repository mirrors the MODBUS/S7/EtherCAT stacks with a Python MCP runtime plus a mock slave so AI agents can scan the bus, exchange cyclic data, and inspect diagnostics safely.
 
 ## Layout
 
@@ -9,7 +9,6 @@ PROFIBUS-Project/
 ├── README.md
 ├── .gitignore
 ├── profibus-python/        # Python MCP server (uv, pyserial)
-├── profibus-npm/           # TypeScript/Node MCP server
 └── profibus-mock-slave/    # Mock PROFIBUS slave
 ```
 

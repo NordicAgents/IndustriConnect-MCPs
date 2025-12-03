@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --border: 0 0% 89%;
+    --input: 0 0% 89%;
+    --ring: 217 91% 60%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --success: 142 71% 45%;
+    --destructive: 0 84% 60%;
+  }
+
+  .dark {
+    /* Main backgrounds - deeper, richer blacks */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+
+    /* Borders and inputs - subtle but visible */
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+
+    /* Focus rings */
+    --ring: 217 91% 60%;
+
+    /* Primary - vibrant blue for CTAs and active states */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - slightly lighter than background */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    /* Muted - for cards, hover states */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+
+    /* Accent - for subtle highlights */
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 95%;
+
+    /* Status colors */
+    --success: 142 71% 45%;
+    --destructive: 0 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Custom scrollbar - refined for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+  transition: background-color 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in-out;
+}

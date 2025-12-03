@@ -4,7 +4,7 @@
 
 ## Overview
 
-Python and TypeScript implementations provide the same core functionality for OPC UA operations through MCP tools, but differ in their implementation approach and deployment model.
+The Python implementation of the OPC UA MCP server provides a full toolset for OPC UA operations through MCP, enabling read/write, browsing, methods, and bulk operations against an OPC UA server.
 
 
 ## Example Usage in Conversation
@@ -65,7 +65,7 @@ Result: "Found 15 variables:
 ..."
 ```
 
-## Implementation Languages
+## Implementation
 
 ### Python Version (`opcua-mcp-server`)
 - **Language**: Python 3.13+
@@ -74,31 +74,9 @@ Result: "Found 15 variables:
 - **Transport**: STDIO
 - **Entry Point**: `opcua-mcp-server.py`
 
-### NPX Version (`opcua-mcp`)
-- **Language**: TypeScript/Node.js
-- **Framework**: @modelcontextprotocol/sdk
-- **OPC UA Library**: `node-opcua`
-- **Transport**: STDIO
-- **Entry Point**: `src/index.ts` (compiled to `build/index.js`)
-
-## Features Comparison
-
-| Feature | Python Version | NPX Version | Notes |
-|---------|----------------|-------------|-------|
-| Read Single Node | ✅ | ✅ | Both support automatic type detection |
-| Write Single Node | ✅ | ✅ | Both support automatic type conversion |
-| Browse Node Children | ✅ | ✅ | Both return JSON formatted results |
-| Call OPC UA Methods | ✅ | ✅ | Both support parameter conversion |
-| Read Multiple Nodes | ✅ | ✅ | Batch read operations |
-| Write Multiple Nodes | ✅ | ✅ | Batch write operations |
-| Get All Variables | ✅ | ✅ | Discover all variables in server address space |
-| Connection Management | ✅ | ✅ | Both handle lifecycle automatically |
-| Error Handling | ✅ | ✅ | Comprehensive error reporting |
-| Type Conversion | ✅ | ✅ | Automatic data type conversion |
-
 ## Tool Implementations
 
-### Available Tools (Both Versions)
+### Available Tools
 
 1. **`read_opcua_node`**
    - Read value from a single OPC UA node
@@ -149,26 +127,8 @@ uv run opcua-mcp-server.py
 python opcua-mcp-server.py
 ```
 
-### NPX Version
-```bash
-# Direct usage (recommended)
-npx opcua-mcp
-
-# Global installation
-npm install -g opcua-mcp
-opcua-mcp
-
-# Development
-npm install
-npm run build
-npm start
-```
-
-**NPM Package**: https://www.npmjs.com/package/opcua-mcp
-
 ## Configuration
 
-Both versions use the same environment variable:
 - `OPCUA_SERVER_URL`: OPC UA server endpoint (default: `opc.tcp://localhost:4840`)
 
 ### Python Configuration Example
@@ -191,21 +151,6 @@ Both versions use the same environment variable:
 }
 ```
 
-### NPX Configuration Example
-```json
-{
-  "mcpServers": {
-    "opcua-npx": {
-      "command": "npx",
-      "args": ["opcua-mcp"],
-      "env": {
-        "OPCUA_SERVER_URL": "opc.tcp://localhost:4840"
-      }
-    }
-  }
-}
-```
-
 ## Dependencies
 
 ### Python Version
@@ -214,20 +159,14 @@ Both versions use the same environment variable:
 - `cryptography>=45.0.2`: Security support
 - `httpx>=0.28.1`: HTTP client
 
-### NPX Version
-- `@modelcontextprotocol/sdk`: MCP SDK for Node.js
-- `node-opcua`: Comprehensive OPC UA library
-- `typescript`: TypeScript compiler
-- `@types/node`: Node.js type definitions
-
 
 ## Security
 
-Both versions currently connect with:
+The server currently connects with:
 - `SecurityPolicy.None`
 - `MessageSecurityMode.None`
 
-For production use, both should implement:
+For production use, you should implement:
 - Certificate-based authentication
 - Encrypted communication
 - User authentication

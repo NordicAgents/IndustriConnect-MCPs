@@ -3,10 +3,7 @@
 A Model Context Protocol (MCP) server for Modbus that lets AI agents and MCP‑compatible apps read and write Modbus devices over TCP, UDP, or Serial (RTU). This repo contains:
 
 - modbus-python: Full‑featured Python MCP server (uv managed)
-- modbus-npm: NPX‑friendly MCP server built with TypeScript/Node.js
 - modbus-mock-server: Lightweight Modbus TCP mock device for local testing
-
-Both servers expose the same tool names and semantics so you can pick the runtime that fits your stack.
 
 ## Features
 
@@ -20,7 +17,6 @@ Both servers expose the same tool names and semantics so you can pick the runtim
 ## Repo Layout
 
 - modbus-python/ — Python MCP server (`modbus-mcp` entrypoint)
-- modbus-npm/ — NPX/Node MCP server (`modbus-mcp` bin)
 - modbus-mock-server/ — Local Modbus TCP simulator (default port 1502)
 
 ## Quick Start (Local)
@@ -33,7 +29,7 @@ uv sync
 uv run modbus-mock-server  # listens on 0.0.0.0:1502
 ```
 
-2) Run an MCP server (choose Python or NPX)
+2) Run the MCP server (Python)
 
 Python (uv):
 ```bash
@@ -46,16 +42,7 @@ uv sync
 uv run modbus-mcp
 ```
 
-Node/NPX (local build):
-```bash
-cd ../modbus-npm
-npm install
-npm run build
-MODBUS_TYPE=tcp MODBUS_HOST=127.0.0.1 MODBUS_PORT=1502 MODBUS_DEFAULT_SLAVE_ID=1 \
-node build/index.js
-```
-
-Both servers communicate over stdio as per MCP.
+Both the MCP server and mock device communicate over TCP and stdio as per MCP.
 
 ## MCP Client Examples
 
@@ -73,19 +60,6 @@ Python server (uv):
   }
 }
 ```
-
-NPX server (Node):
-```json
-{
-  "mcpServers": {
-    "Modbus MCP (NPX)": {
-      "command": "modbus-mcp",
-      "env": { "MODBUS_TYPE": "tcp", "MODBUS_HOST": "127.0.0.1", "MODBUS_PORT": "1502", "MODBUS_DEFAULT_SLAVE_ID": "1" }
-    }
-  }
-}
-```
-Tip: For local builds, use "command": "node" and set "args" to the absolute path of `modbus-npm/build/index.js`.
 
 ### MCP Inspector / CLI
 
@@ -212,8 +186,6 @@ Point `REGISTER_MAP_FILE` to a JSON file to define named points. Example:
 - Python
   - Requires Python 3.10+ and uv
   - From `modbus-python`: `uv sync`, then `uv run modbus-mcp`
-- Node/TypeScript
-  - From `modbus-npm`: `npm install`, `npm run build`, then `node build/index.js`
 
 ## Troubleshooting
 
@@ -225,4 +197,3 @@ Point `REGISTER_MAP_FILE` to a JSON file to define named points. Example:
 ## License
 
 See individual package folders for license details.
-
