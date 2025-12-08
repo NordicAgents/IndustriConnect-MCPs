@@ -207,7 +207,6 @@ For a deeper dive into the motivation, architecture, and design decisions behind
 
 ## Contributing & Roadmap
 
-- Each protocol project references a roadmap document under `docs/roadmap/` that outlines planned features and phases.
 - Contributions are welcome as:
   - New tools or coverage within an existing protocol
   - Improvements to mocks and test scenarios
