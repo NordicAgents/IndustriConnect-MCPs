@@ -2,6 +2,9 @@
 
 A collection of Model Context Protocol (MCP) servers and tools for industrial automation protocols. This repo lets AI assistants and other MCP‑compatible clients talk to real (or simulated) PLCs and control systems using familiar protocols like Modbus, MQTT/Sparkplug B, OPC UA, BACnet, DNP3, EtherCAT, EtherNet/IP, PROFIBUS, PROFINET, and Siemens S7 (S7comm).
 
+<img width="1456" height="774" alt="Screenshot 2025-12-08 at 21 32 53" src="https://github.com/user-attachments/assets/de160a10-9def-466c-a679-7c6f08fe91d1" />
+
+
 All protocol stacks follow the same pattern:
 
 - A Python MCP server that exposes a consistent set of tools over stdio
