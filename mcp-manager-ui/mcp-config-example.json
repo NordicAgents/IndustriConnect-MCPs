@@ -4,7 +4,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/mx/Documents/Work/industriAgents/IndustriConnect-MCPs/MQTT-Project/mqtt-python",
+        "${PROJECT_ROOT}/MQTT-Project/mqtt-python",
         "run",
         "mqtt-mcp"
       ],
@@ -19,7 +19,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/mx/Documents/Work/industriAgents/IndustriConnect-MCPs/OPCUA-Project/opcua-mcp-server",
+        "${PROJECT_ROOT}/OPCUA-Project/opcua-mcp-server",
         "run",
         "opcua-mcp-server.py"
       ],
